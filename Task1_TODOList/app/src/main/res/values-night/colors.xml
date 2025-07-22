@@ -5,9 +5,9 @@
 
     <color name="toolbar">#BDC8FF</color>
 
-    <color name="buttons">#ADD2FF</color>
+    <color name="buttons">#C3ADFF</color>
     
     <color name="item">#B9B9B9</color>
 
-    <color name="text">@color/black</color>
+    <color name="text">@color/white</color>
 </resources>
