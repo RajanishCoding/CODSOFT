@@ -10,4 +10,7 @@
     <color name="item">#B9B9B9</color>
 
     <color name="text">@color/white</color>
+
+    <color name="textRev">@color/black</color>
+
 </resources>

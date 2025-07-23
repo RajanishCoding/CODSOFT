@@ -26,6 +26,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         TextView details;
         CheckBox checkB;
         ImageButton starB;
+//        TextView statusT;
+        TextView leftDaysT;
+        TextView dueDateT;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -33,6 +36,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             details = itemView.findViewById(R.id.detailT);
             checkB = itemView.findViewById(R.id.checkB);
             starB = itemView.findViewById(R.id.starB);
+//            statusT = itemView.findViewById(R.id.statusT);
+            leftDaysT = itemView.findViewById(R.id.leftDaysT);
+            dueDateT = itemView.findViewById(R.id.dueDateT);
         }
     }
 
@@ -52,7 +58,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.title.setText(task.getTitle());
         holder.details.setText(task.getDetail());
-        holder.title.setText(task.getTitle());
+        holder.dueDateT.setText(task.getDueDate());
     }
 
     @Override
