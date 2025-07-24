@@ -2,6 +2,7 @@ package com.example.todolist;
 
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TaskAdapter adapter;
 
+    private Button addTaskB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,15 +42,32 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        addTaskB = findViewById(R.id.addTaskB);
+
         taskList = new ArrayList<>();
         adapter = new TaskAdapter(taskList);
 
-        taskList.add(new Task("Hello World", "No Details", "14/10/2025"));
-        taskList.add(new Task("Hello World1", "No Details", "14/10/2025"));
-        taskList.add(new Task("Hello World2", "No Details", "14/10/2025"));
-        taskList.add(new Task("Hello World3", "No Details", "14/10/2025"));
-        taskList.add(new Task("Hello World4", "No Details", "14/10/2025"));
+        taskList.add(new Task("Hello World", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World1", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World2", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World3", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
+        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
 
         recyclerView.setAdapter(adapter);
+
+
+        addTaskB.setOnClickListener(v -> {
+            TaskDialog taskDialog = new TaskDialog(0, null);
+            taskDialog.show(getSupportFragmentManager(), taskDialog.getTag());
+        });
+
+        TaskDialog.addTaskListener(task -> {
+            taskList.add(0, task);
+            adapter.notifyItemInserted(0);
+            recyclerView.scrollToPosition(0);
+        });
     }
 }

@@ -1,18 +1,21 @@
 package com.example.todolist;
 
 public class Task {
-    String title;
-    String detail;
-    String dueDate;
+    private String title;
+    private String detail;
+    private String dueDate;
 
-    int leftDays;
+    private int leftDays;
 
-    boolean isCompleted;
+    private final Long dateInMillis;
 
-    Task(String title, String detail, String dueDate) {
+    private boolean isCompleted;
+
+    Task(String title, String detail, String dueDate, Long dateInMillis) {
         this.title = title;
         this.detail = detail;
         this.dueDate = dueDate;
+        this.dateInMillis = dateInMillis;
     }
 
 
@@ -57,4 +60,7 @@ public class Task {
     }
 
 
+    public Long getDateInMillis() {
+        return dateInMillis;
+    }
 }

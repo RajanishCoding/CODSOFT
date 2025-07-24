@@ -11,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
@@ -57,9 +59,44 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task task = taskList.get(position);
 
         holder.title.setText(task.getTitle());
-        holder.details.setText(task.getDetail());
         holder.dueDateT.setText(task.getDueDate());
+
+        if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
+        else {
+            holder.details.setText(task.getDetail());
+        }
+
+        long daysLeft = getDaysLeft(task.getDateInMillis());
+        if (daysLeft == 0) {
+            holder.leftDaysT.setText("Active");
+        }
+        else if (daysLeft < 0) {
+            holder.leftDaysT.setText("Overdue");
+        }
+        else {
+            holder.leftDaysT.setText(daysLeft + "d left");
+        }
     }
+
+    private long getDaysLeft(long millis) {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        Calendar taskDay = Calendar.getInstance();
+        taskDay.setTimeInMillis(millis);
+        taskDay.set(Calendar.HOUR_OF_DAY, 0);
+        taskDay.set(Calendar.MINUTE, 0);
+        taskDay.set(Calendar.SECOND, 0);
+        taskDay.set(Calendar.MILLISECOND, 0);
+
+        long diffMillis = taskDay.getTimeInMillis() - today.getTimeInMillis();
+
+        return TimeUnit.MILLISECONDS.toDays(diffMillis);
+    }
+
 
     @Override
     public int getItemCount() {
