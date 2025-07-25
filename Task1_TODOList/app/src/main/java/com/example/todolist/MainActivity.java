@@ -1,6 +1,7 @@
 package com.example.todolist;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         addTaskB = findViewById(R.id.addTaskB);
 
         taskList = new ArrayList<>();
-        adapter = new TaskAdapter(taskList);
+        adapter = new TaskAdapter(getSupportFragmentManager(), taskList);
 
         taskList.add(new Task("Hello World", "No Details", "14/10/2025", 1000L));
         taskList.add(new Task("Hello World1", "No Details", "14/10/2025", 1000L));
@@ -60,14 +61,24 @@ public class MainActivity extends AppCompatActivity {
 
 
         addTaskB.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(0, null);
+            TaskDialog taskDialog = new TaskDialog(1, null, -1);
             taskDialog.show(getSupportFragmentManager(), taskDialog.getTag());
         });
 
-        TaskDialog.addTaskListener(task -> {
-            taskList.add(0, task);
-            adapter.notifyItemInserted(0);
-            recyclerView.scrollToPosition(0);
+        TaskDialog.addTaskListener(new TaskDialog.TaskListener() {
+            @Override
+            public void onTaskAdded(Task task) {
+                taskList.add(0, task);
+                adapter.notifyItemInserted(0);
+                recyclerView.scrollToPosition(0);
+            }
+
+            @Override
+            public void onTaskUpdated(Task task, int taskIndex) {
+                Log.d("hdhdh", "onTaskUpdated: " + taskIndex);
+                taskList.set(taskIndex, task);
+                adapter.notifyItemChanged(taskIndex);
+            }
         });
     }
 }

@@ -1,13 +1,14 @@
 package com.example.todolist;
 
 public class Task {
+    private String id;
     private String title;
     private String detail;
     private String dueDate;
 
     private int leftDays;
 
-    private final Long dateInMillis;
+    private Long dateInMillis;
 
     private boolean isCompleted;
 
@@ -16,6 +17,7 @@ public class Task {
         this.detail = detail;
         this.dueDate = dueDate;
         this.dateInMillis = dateInMillis;
+        id = title + dueDate;
     }
 
 
@@ -57,6 +59,11 @@ public class Task {
 
     public void setLeftDays(int leftDays) {
         this.leftDays = leftDays;
+    }
+
+
+    public void setDateInMillis(Long dateInMillis) {
+        this.dateInMillis = dateInMillis;
     }
 
 

@@ -28,12 +28,14 @@ public class TaskDialog extends DialogFragment {
 
     public interface TaskListener {
         void onTaskAdded(Task task);
+        void onTaskUpdated(Task task, int taskIndex);
     }
 
     public static TaskListener taskListener;
 
     private int mode;
     private Task task;
+    private int taskIndex;
 
     private EditText titleE;
     private EditText detE;
@@ -43,9 +45,10 @@ public class TaskDialog extends DialogFragment {
 
     public long selectedTimeMillis;
 
-    public TaskDialog(int mode, Task task) {
+    public TaskDialog(int mode, Task task, int taskIndex) {
         this.mode = mode;
         this.task = task;
+        this.taskIndex = taskIndex;
     }
 
     @NonNull
@@ -82,6 +85,13 @@ public class TaskDialog extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (mode == 2) {
+            titleE.setText(task.getTitle());
+            detE.setText(task.getDetail());
+            dateE.setText(task.getDueDate());
+            selectedTimeMillis = task.getDateInMillis();
+        }
+
         Calendar calendar = Calendar.getInstance();
         int yr = calendar.get(Calendar.YEAR);
         int m = calendar.get(Calendar.MONTH);
@@ -108,8 +118,17 @@ public class TaskDialog extends DialogFragment {
 
         doneB.setOnClickListener(v -> {
             if (isTaskValid()) {
-                Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(), dateE.getText().toString().trim(), selectedTimeMillis);
-                taskListener.onTaskAdded(task);
+                if (mode == 1) {
+                    Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(), dateE.getText().toString().trim(), selectedTimeMillis);
+                    taskListener.onTaskAdded(task);
+                }
+                else {
+                    task.setTitle(titleE.getText().toString().trim());
+                    task.setDetail(detE.getText().toString().trim());
+                    task.setDueDate(dateE.getText().toString().trim());
+                    task.setDateInMillis(selectedTimeMillis);
+                    taskListener.onTaskUpdated(task, taskIndex);
+                }
                 dismiss();
             }
         });

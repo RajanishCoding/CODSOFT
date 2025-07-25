@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Calendar;
@@ -17,9 +18,11 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
+    FragmentManager fragmentManager;
     List<Task> taskList;
 
-    public TaskAdapter(List<Task> taskList) {
+    public TaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
+        this.fragmentManager = fragmentManager;
         this.taskList = taskList;
     }
 
@@ -76,6 +79,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         else {
             holder.leftDaysT.setText(daysLeft + "d left");
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            TaskDialog taskDialog = new TaskDialog(2, task, holder.getAdapterPosition());
+            taskDialog.show(fragmentManager, taskDialog.getTag());
+        });
     }
 
     private long getDaysLeft(long millis) {
