@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ public class TaskDialog extends DialogFragment {
     private Task task;
     private int taskIndex;
 
+    private TextView title;
     private EditText titleE;
     private EditText detE;
     private EditText dateE;
@@ -71,12 +73,17 @@ public class TaskDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.task_dialog, container, false);
 
+        title = view.findViewById(R.id.titleText);
         titleE = view.findViewById(R.id.titleE);
         detE = view.findViewById(R.id.detE);
         dateE = view.findViewById(R.id.datePickerE);
 
         cancelB = view.findViewById(R.id.decline_button);
         doneB = view.findViewById(R.id.accept_button);
+
+        if (mode == 2) {
+            title.setText("Edit Task");
+        }
 
         setCancelable(false);
 

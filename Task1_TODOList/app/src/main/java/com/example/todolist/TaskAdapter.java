@@ -105,7 +105,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return TimeUnit.MILLISECONDS.toDays(diffMillis);
     }
 
-
     @Override
     public int getItemCount() {
         return taskList.size();

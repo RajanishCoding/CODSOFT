@@ -15,20 +15,23 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TabLayout tabLayout;
+    private ViewPageAdapter viewPageAdapter;
+    private ViewPager2 viewPager;
+
     private Toolbar toolbar;
 
-    private List<Task> taskList;
-
-    private RecyclerView recyclerView;
-    private TaskAdapter adapter;
-
-    private Button addTaskB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,45 +43,26 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
 
-        addTaskB = findViewById(R.id.addTaskB);
+        viewPageAdapter = new ViewPageAdapter(this);
+        viewPager.setAdapter(viewPageAdapter);
+        viewPager.setCurrentItem(1, false);
 
-        taskList = new ArrayList<>();
-        adapter = new TaskAdapter(getSupportFragmentManager(), taskList);
-
-        taskList.add(new Task("Hello World", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World1", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World2", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World3", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
-
-        recyclerView.setAdapter(adapter);
-
-
-        addTaskB.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(1, null, -1);
-            taskDialog.show(getSupportFragmentManager(), taskDialog.getTag());
-        });
-
-        TaskDialog.addTaskListener(new TaskDialog.TaskListener() {
-            @Override
-            public void onTaskAdded(Task task) {
-                taskList.add(0, task);
-                adapter.notifyItemInserted(0);
-                recyclerView.scrollToPosition(0);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setIcon(R.drawable.round_star);
+                    break;
+                case 1:
+                    tab.setText("Task");
+                    break;
+                case 2:
+                    tab.setText("Completed");
+                    break;
             }
+        }).attach();
 
-            @Override
-            public void onTaskUpdated(Task task, int taskIndex) {
-                Log.d("hdhdh", "onTaskUpdated: " + taskIndex);
-                taskList.set(taskIndex, task);
-                adapter.notifyItemChanged(taskIndex);
-            }
-        });
     }
 }
