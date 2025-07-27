@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.todolist.Active.TaskFragment;
+import com.example.todolist.Completed.CompletedFragment;
+import com.example.todolist.Starred.StarFragment;
+
 public class ViewPageAdapter extends FragmentStateAdapter {
 
     public ViewPageAdapter(@NonNull FragmentActivity fragmentActivity) {

@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.Active;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,20 +9,39 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.todolist.R;
+import com.example.todolist.Task;
+import com.example.todolist.TaskDialog;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class StarTaskAdapter extends RecyclerView.Adapter<StarTaskAdapter.TaskViewHolder> {
+public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
     FragmentManager fragmentManager;
     List<Task> taskList;
 
-    public StarTaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
+    public static final DiffUtil.ItemCallback<Task> DIFF_CALLBACK = new DiffUtil.ItemCallback<Task>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+            return oldItem.getId().equals(newItem.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
+
+
+    public TaskAdapter(FragmentManager fragmentManager) {
+        super(DIFF_CALLBACK);
         this.fragmentManager = fragmentManager;
-        this.taskList = taskList;
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -58,7 +77,9 @@ public class StarTaskAdapter extends RecyclerView.Adapter<StarTaskAdapter.TaskVi
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = taskList.get(position);
+        Task task = getItem(position);
+
+        if (task == null) return;
 
         holder.title.setText(task.getTitle());
         holder.dueDateT.setText(task.getDueDate());
@@ -66,6 +87,7 @@ public class StarTaskAdapter extends RecyclerView.Adapter<StarTaskAdapter.TaskVi
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {
             holder.details.setText(task.getDetail());
+            holder.details.setVisibility(View.VISIBLE);
         }
 
         long daysLeft = getDaysLeft(task.getDateInMillis());
@@ -114,6 +136,6 @@ public class StarTaskAdapter extends RecyclerView.Adapter<StarTaskAdapter.TaskVi
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return getCurrentList().size();
     }
 }

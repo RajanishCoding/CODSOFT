@@ -1,9 +1,8 @@
-package com.example.todolist;
+package com.example.todolist.Completed;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -12,16 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.R;
+import com.example.todolist.Task;
+import com.example.todolist.TaskDialog;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdapter.TaskViewHolder> {
 
     FragmentManager fragmentManager;
     List<Task> taskList;
 
-    public TaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
+    public CompletedTaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
         this.fragmentManager = fragmentManager;
         this.taskList = taskList;
     }

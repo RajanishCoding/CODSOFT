@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.Starred;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.R;
+import com.example.todolist.Task;
+import com.example.todolist.TaskDialog;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdapter.TaskViewHolder> {
+public class StarTaskAdapter extends RecyclerView.Adapter<StarTaskAdapter.TaskViewHolder> {
 
     FragmentManager fragmentManager;
     List<Task> taskList;
 
-    public CompletedTaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
+    public StarTaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
         this.fragmentManager = fragmentManager;
         this.taskList = taskList;
     }

@@ -22,7 +22,7 @@ public class Task {
     private boolean isCompleted = false;
     private boolean isImportant = false;
 
-    Task(String title, String detail, String dueDate, Long dateInMillis) {
+    public Task(String title, String detail, String dueDate, Long dateInMillis) {
         this.title = title;
         this.detail = detail;
         this.dueDate = dueDate;
@@ -30,6 +30,18 @@ public class Task {
         id = title + dueDate;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Task task = (Task) obj;
+        return title.equals(task.title) &&
+                isCompleted == task.isCompleted &&
+                isImportant == task.isImportant &&
+                detail.equals(task.detail) &&
+                dateInMillis.equals(task.dateInMillis);
+    }
 
     @NonNull
     public String getId() { return id; }
