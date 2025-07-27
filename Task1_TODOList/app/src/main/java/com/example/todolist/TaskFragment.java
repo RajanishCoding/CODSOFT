@@ -23,6 +23,8 @@ import java.util.List;
 
 public class TaskFragment extends Fragment {
 
+//    private RoomDB roomDB;
+    private RoomDao roomDao;
     private List<Task> taskList;
 
     private RecyclerView recyclerView;
@@ -50,20 +52,37 @@ public class TaskFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        roomDao = RoomDB.getDatabase(requireContext()).roomDao();
 
-        taskList = new ArrayList<>();
-        adapter = new TaskAdapter(getChildFragmentManager(), taskList);
-        recyclerView.setAdapter(adapter);
+        new Thread(() -> {
+            List<Task> tasks = roomDao.getTasks();
 
-        taskList.add(new Task("Hello World", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World1", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World2", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World3", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World4", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World5", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World6", "No Details", "14/10/2025", 1000L));
-        taskList.add(new Task("Hello World7", "No Details", "14/10/2025", 1000L));
+            requireActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
 
+                taskList = new ArrayList<>(tasks);
+                Log.d("tasksList", "onViewCreated: " + taskList);
+
+//                Task task1 = new Task("Hello World1", "", "Sun, 27 Jul, 2025", 1753587083655L);
+//                task1.setPos(0);
+//                taskList.add(task1);
+//                new Thread(() -> roomDao.insert(task1)).start();
+//
+//                Task task2 = new Task("Hello World2", "", "Sun, 27 Jul, 2025", 1753587083655L);
+//                task1.setPos(1);
+//                taskList.add(task2);
+//                new Thread(() -> roomDao.insert(task2)).start();
+//
+//                Task task3 = new Task("Hello World3", "Detail", "Sun, 27 Jul, 2025", 1753587083655L);
+//                task1.setPos(2);
+//                taskList.add(task3);
+//                new Thread(() -> roomDao.insert(task3)).start();
+
+
+                adapter = new TaskAdapter(getChildFragmentManager(), taskList);
+                recyclerView.setAdapter(adapter);
+            });
+        }).start();
 
         addTaskB.setOnClickListener(v -> {
             TaskDialog taskDialog = new TaskDialog(1, null, -1);
@@ -73,16 +92,18 @@ public class TaskFragment extends Fragment {
         TaskDialog.addTaskListener(new TaskDialog.TaskListener() {
             @Override
             public void onTaskAdded(Task task) {
+                task.setPos(taskList.size());
                 taskList.add(0, task);
                 adapter.notifyItemInserted(0);
                 recyclerView.scrollToPosition(0);
+                new Thread(() -> roomDao.insert(task)).start();
             }
 
             @Override
             public void onTaskUpdated(Task task, int taskIndex) {
-                Log.d("hdhdh", "onTaskUpdated: " + taskIndex);
                 taskList.set(taskIndex, task);
                 adapter.notifyItemChanged(taskIndex);
+                new Thread(() -> roomDao.update(task)).start();
             }
         });
 

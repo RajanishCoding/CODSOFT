@@ -3,7 +3,6 @@ package com.example.todolist;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,12 +15,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+public class StarTaskAdapter extends RecyclerView.Adapter<StarTaskAdapter.TaskViewHolder> {
 
     FragmentManager fragmentManager;
     List<Task> taskList;
 
-    public TaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
+    public StarTaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
         this.fragmentManager = fragmentManager;
         this.taskList = taskList;
     }

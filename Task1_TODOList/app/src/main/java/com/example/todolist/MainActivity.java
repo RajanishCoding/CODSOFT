@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewPageAdapter = new ViewPageAdapter(this);
         viewPager.setAdapter(viewPageAdapter);
-        viewPager.setCurrentItem(1, false);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
@@ -63,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }).attach();
+
+        viewPager.setCurrentItem(1, false);
 
     }
 }

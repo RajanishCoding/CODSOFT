@@ -16,6 +16,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/addTaskB" />
 
+    <TextView
+        android:id="@+id/notFoundT"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Tasks Created\nAdd tasks using Add Task Button"
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/addTaskB"
