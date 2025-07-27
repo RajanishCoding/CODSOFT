@@ -1,5 +1,6 @@
 package com.example.todolist.Completed;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +10,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.R;
+import com.example.todolist.Room.RoomDB;
+import com.example.todolist.Room.RoomDao;
 import com.example.todolist.Task;
 import com.example.todolist.TaskDialog;
 
@@ -19,14 +24,31 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdapter.TaskViewHolder> {
+public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter.TaskViewHolder> {
 
+    Context context;
     FragmentManager fragmentManager;
     List<Task> taskList;
 
-    public CompletedTaskAdapter(FragmentManager fragmentManager, List<Task> taskList) {
+    private RoomDao roomDao;
+
+    public static final DiffUtil.ItemCallback<Task> DIFF_CALLBACK = new DiffUtil.ItemCallback<Task>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+            return oldItem.getId().equals(newItem.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
+
+
+    public CompletedTaskAdapter(Context context, FragmentManager fragmentManager) {
+        super(DIFF_CALLBACK);
+        this.context = context;
         this.fragmentManager = fragmentManager;
-        this.taskList = taskList;
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -55,14 +77,18 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
 
-
+        roomDao = RoomDB.getDatabase(context).roomDao();
 
         return new TaskViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = taskList.get(position);
+        Task task = getItem(position);
+
+        if (task == null) return;
+
+        holder.starB.setVisibility(View.GONE);
 
         holder.title.setText(task.getTitle());
         holder.dueDateT.setText(task.getDueDate());
@@ -70,7 +96,10 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {
             holder.details.setText(task.getDetail());
+            holder.details.setVisibility(View.VISIBLE);
         }
+
+        holder.checkB.setChecked(task.isCompleted());
 
         long daysLeft = getDaysLeft(task.getDateInMillis());
         if (daysLeft == 0) {
@@ -86,6 +115,14 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
         holder.itemView.setOnClickListener(v -> {
             TaskDialog taskDialog = new TaskDialog(2, task, holder.getAdapterPosition());
             taskDialog.show(fragmentManager, taskDialog.getTag());
+        });
+
+        holder.checkB.setOnCheckedChangeListener((v, isChecked) -> {
+            Task taskC = getItem(holder.getAdapterPosition());
+            if (!isChecked) {
+                taskC.setCompleted(false);
+                new Thread(() -> roomDao.update(taskC)).start();
+            }
         });
     }
 
@@ -118,6 +155,6 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return getCurrentList().size();
     }
 }

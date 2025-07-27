@@ -19,8 +19,8 @@ public class Task {
 
     private Long dateInMillis;
 
-    private boolean isCompleted = false;
-    private boolean isImportant = false;
+    private boolean isCompleted;
+    private boolean isImportant;
 
     public Task(String title, String detail, String dueDate, Long dateInMillis) {
         this.title = title;

@@ -1,9 +1,12 @@
 package com.example.todolist.Active;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,6 +17,8 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.R;
+import com.example.todolist.Room.RoomDB;
+import com.example.todolist.Room.RoomDao;
 import com.example.todolist.Task;
 import com.example.todolist.TaskDialog;
 
@@ -23,8 +28,11 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
+    Context context;
     FragmentManager fragmentManager;
     List<Task> taskList;
+
+    private RoomDao roomDao;
 
     public static final DiffUtil.ItemCallback<Task> DIFF_CALLBACK = new DiffUtil.ItemCallback<Task>() {
         @Override
@@ -39,8 +47,9 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     };
 
 
-    public TaskAdapter(FragmentManager fragmentManager) {
+    public TaskAdapter(Context context, FragmentManager fragmentManager) {
         super(DIFF_CALLBACK);
+        this.context = context;
         this.fragmentManager = fragmentManager;
     }
 
@@ -70,7 +79,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
 
-
+        roomDao = RoomDB.getDatabase(context).roomDao();
 
         return new TaskViewHolder(view);
     }
@@ -90,6 +99,12 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             holder.details.setVisibility(View.VISIBLE);
         }
 
+        if (task.isCompleted()) holder.checkB.setChecked(true);
+        else holder.checkB.setChecked(false);
+
+        if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
+        else holder.starB.setImageResource(R.drawable.round_star_outline);
+
         long daysLeft = getDaysLeft(task.getDateInMillis());
         if (daysLeft == 0) {
             holder.leftDaysT.setText("Active");
@@ -104,6 +119,29 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         holder.itemView.setOnClickListener(v -> {
             TaskDialog taskDialog = new TaskDialog(2, task, holder.getAdapterPosition());
             taskDialog.show(fragmentManager, taskDialog.getTag());
+        });
+
+        holder.checkB.setOnCheckedChangeListener((v, isChecked) -> {
+            Task taskC = getItem(holder.getAdapterPosition());
+            if (isChecked) {
+                taskC.setCompleted(true);
+                new Thread(() -> roomDao.update(taskC)).start();
+            }
+        });
+
+        holder.starB.setOnClickListener(v -> {
+            Task taskS = getItem(holder.getAdapterPosition());
+            if (taskS.isImportant()) {
+                holder.starB.setImageResource(R.drawable.round_star_outline);
+                taskS.setImportant(false);
+            }
+            else {
+                holder.starB.setImageResource(R.drawable.round_star);
+                taskS.setImportant(true);
+            }
+            new Thread(() -> {
+                roomDao.update(taskS);
+            }).start();
         });
     }
 

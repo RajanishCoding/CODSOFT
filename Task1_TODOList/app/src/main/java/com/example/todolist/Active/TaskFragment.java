@@ -16,6 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.todolist.R;
@@ -39,6 +42,8 @@ public class TaskFragment extends Fragment {
     private TaskAdapter adapter;
 
     private Button addTaskB;
+    private CheckBox markCompletedB;
+    private ImageButton markStarB;
 
     private TextView notfoundT;
 
@@ -64,17 +69,13 @@ public class TaskFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         roomDao = RoomDB.getDatabase(requireContext()).roomDao();
 
-        taskList = new ArrayList<>();
-        adapter = new TaskAdapter(getChildFragmentManager());
+        adapter = new TaskAdapter(requireContext(), getChildFragmentManager());
         recyclerView.setAdapter(adapter);
 
         roomDao.getTasks().observe(getViewLifecycleOwner(), tasks -> {
-            taskList.clear();
-            taskList.addAll(tasks);
             adapter.submitList(tasks);
-            if (taskList.isEmpty()) {
-                notfoundT.setVisibility(View.VISIBLE);
-            }
+            if (tasks.isEmpty()) notfoundT.setVisibility(View.VISIBLE);
+            else notfoundT.setVisibility(View.GONE);
         });
 
         addTaskB.setOnClickListener(v -> {
@@ -86,7 +87,6 @@ public class TaskFragment extends Fragment {
             @Override
             public void onTaskAdded(Task task) {
                 Log.d("added", "onTaskAdded: " + "added");
-                if (notfoundT.getVisibility() == View.VISIBLE) notfoundT.setVisibility(View.GONE);
                 task.setPos(adapter.getItemCount());
                 new Thread(() -> {
                     roomDao.insert(task);
@@ -96,8 +96,6 @@ public class TaskFragment extends Fragment {
 
             @Override
             public void onTaskUpdated(Task task, int taskIndex) {
-                taskList.set(taskIndex, task);
-                adapter.notifyItemChanged(taskIndex);
                 new Thread(() -> roomDao.update(task)).start();
             }
         });
@@ -129,18 +127,6 @@ public class TaskFragment extends Fragment {
         });
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-//        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//            @Override
-//            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-//                int position = parent.getChildAdapterPosition(view);
-//                int itemCount = state.getItemCount();
-//
-//                if (position == itemCount - 1) {
-//                    outRect.bottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, parent.getResources().getDisplayMetrics());
-//                }
-//            }
-//        });
 
     }
 }

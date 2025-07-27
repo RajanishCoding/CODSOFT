@@ -21,9 +21,7 @@ import com.example.todolist.R;
 import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
 import com.example.todolist.Task;
-import com.example.todolist.TaskDialog;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class StarFragment extends Fragment {
     private List<Task> taskList;
 
     private RecyclerView recyclerView;
-    private TaskAdapter adapter;
+    private StarTaskAdapter adapter;
 
     private TextView notfoundT;
 
@@ -59,38 +57,14 @@ public class StarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         roomDao = RoomDB.getDatabase(requireContext()).roomDao();
 
-        adapter = new TaskAdapter(getChildFragmentManager());
+        adapter = new StarTaskAdapter(requireContext(), getChildFragmentManager());
         recyclerView.setAdapter(adapter);
 
-        new Thread(() -> {
-//            List<Task> tasks = roomDao.getStarredTasks();
-
-            requireActivity().runOnUiThread(() -> {
-                if (!isAdded()) return;
-
-                taskList = new ArrayList<>();
-
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-                taskList.add(new Task("jngg", "", "jfdj", 848484L));
-
-
-//                if (tasks.isEmpty()) {
-//                    notfoundT.setVisibility(View.VISIBLE);
-//                }
-            });
-        }).start();
+        roomDao.getImportantTasks().observe(getViewLifecycleOwner(), tasks -> {
+            adapter.submitList(tasks);
+            if (tasks.isEmpty()) notfoundT.setVisibility(View.VISIBLE);
+            else notfoundT.setVisibility(View.GONE);
+        });
 
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
@@ -120,18 +94,6 @@ public class StarFragment extends Fragment {
         });
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                int position = parent.getChildAdapterPosition(view);
-                int itemCount = state.getItemCount();
-
-                if (position == itemCount - 1) {
-                    outRect.bottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, parent.getResources().getDisplayMetrics());
-                }
-            }
-        });
 
     }
 
