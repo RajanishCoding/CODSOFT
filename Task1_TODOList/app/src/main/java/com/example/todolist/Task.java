@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Calendar;
+
 @Entity(tableName = "task_table")
 public class Task {
     @PrimaryKey
@@ -15,33 +17,25 @@ public class Task {
     private String detail;
     private String dueDate;
 
-    private int leftDays;
-
     private Long dateInMillis;
+    private Long creationDateinMillis;
 
+    private Long completedDateinMillis;
+
+    private int leftDays;
+    
     private boolean isCompleted;
     private boolean isImportant;
 
-    public Task(String title, String detail, String dueDate, Long dateInMillis) {
+    public Task(String title, String detail, String dueDate, Long dateInMillis, Long creationDateinMillis) {
         this.title = title;
         this.detail = detail;
         this.dueDate = dueDate;
         this.dateInMillis = dateInMillis;
+        this.creationDateinMillis = creationDateinMillis;
         id = title + dueDate;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        Task task = (Task) obj;
-        return title.equals(task.title) &&
-                isCompleted == task.isCompleted &&
-                isImportant == task.isImportant &&
-                detail.equals(task.detail) &&
-                dateInMillis.equals(task.dateInMillis);
-    }
+    
 
     @NonNull
     public String getId() { return id; }
@@ -84,6 +78,23 @@ public class Task {
         return dateInMillis;
     }
 
+    public Long getCreationDateinMillis() {
+        return creationDateinMillis;
+    }
+
+    public Long getCompletedDateinMillis() {
+        return completedDateinMillis;
+    }
+
+    public void setCompletionDateinMillis() {
+        Calendar calendar = Calendar.getInstance();
+        completedDateinMillis = calendar.getTimeInMillis();
+    }
+
+    public void setCompletedDateinMillis(Long completedDateinMillis) {
+        this.completedDateinMillis = completedDateinMillis;
+    }
+
     public int getLeftDays() {
         return leftDays;
     }
@@ -103,4 +114,18 @@ public class Task {
     public boolean isImportant() { return isImportant; }
 
     public void setImportant(boolean important) { isImportant = important; }
+
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Task task = (Task) obj;
+        return title.equals(task.title) &&
+                isCompleted == task.isCompleted &&
+                isImportant == task.isImportant &&
+                detail.equals(task.detail) &&
+                dateInMillis.equals(task.dateInMillis);
+    }
 }

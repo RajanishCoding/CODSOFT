@@ -22,15 +22,57 @@
         android:orientation="vertical"
         android:padding="24dp"
         android:gravity="center">
-
-        <TextView
-            android:id="@+id/titleText"
+        
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
-            android:gravity="start"
-            android:text="Add Task"
-            android:textSize="24sp" />
+            android:layout_height="40dp"
+            android:layout_marginBottom="22dp">
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Task"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageButton
+                android:id="@+id/delB"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:contentDescription="Delete Task"
+                android:src="@drawable/round_delete_forever"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toStartOf="@id/starB"/>
+
+            <ImageButton
+                android:id="@+id/starB"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:contentDescription="Mark as Important"
+                android:src="@drawable/round_star_outline"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toStartOf="@id/completeB"/>
+
+            <CheckBox
+                android:id="@+id/completeB"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:contentDescription="Mark as Completed"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toStartOf="@id/infoB"/>
+
+            <ImageButton
+                android:id="@+id/infoB"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:contentDescription="Task Information"
+                android:src="@drawable/round_info_outline"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <LinearLayout

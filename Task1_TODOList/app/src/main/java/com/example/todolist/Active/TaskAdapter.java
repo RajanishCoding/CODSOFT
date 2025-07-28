@@ -117,7 +117,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         }
 
         holder.itemView.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(2, task, holder.getAdapterPosition());
+            TaskDialog taskDialog = new TaskDialog(2, getItem(holder.getAdapterPosition()), holder.getAdapterPosition());
             taskDialog.show(fragmentManager, taskDialog.getTag());
         });
 

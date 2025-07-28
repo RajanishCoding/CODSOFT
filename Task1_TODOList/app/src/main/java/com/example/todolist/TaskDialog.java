@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +46,16 @@ public class TaskDialog extends DialogFragment {
     private EditText dateE;
     private Button cancelB;
     private Button doneB;
+    private ImageButton infoB;
+    private CheckBox compB;
+    private ImageButton starB;
+    private ImageButton delB;
+
+    private boolean isCompleted;
+    private boolean isImportant;
 
     public long selectedTimeMillis;
+    public long creationTimeMillis;
 
     public TaskDialog(int mode, Task task, int taskIndex) {
         this.mode = mode;
@@ -81,9 +91,10 @@ public class TaskDialog extends DialogFragment {
         cancelB = view.findViewById(R.id.decline_button);
         doneB = view.findViewById(R.id.accept_button);
 
-        if (mode == 2) {
-            title.setText("Edit Task");
-        }
+        infoB = view.findViewById(R.id.infoB);
+        compB = view.findViewById(R.id.completeB);
+        starB = view.findViewById(R.id.starB);
+        delB = view.findViewById(R.id.delB);
 
         setCancelable(false);
 
@@ -93,9 +104,17 @@ public class TaskDialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (mode == 2) {
+            title.setText("Edit Task");
+            delB.setVisibility(View.GONE);
+
             titleE.setText(task.getTitle());
             detE.setText(task.getDetail());
             dateE.setText(task.getDueDate());
+
+            isCompleted = task.isCompleted();
+            isImportant = task.isImportant();
+            compB.setChecked(isCompleted);
+            starB.setImageResource(isImportant ? R.drawable.round_star : R.drawable.round_star_outline);
             selectedTimeMillis = task.getDateInMillis();
         }
 
@@ -121,12 +140,35 @@ public class TaskDialog extends DialogFragment {
             datePickerDialog.show();
         });
 
+        infoB.setOnClickListener(v -> {});
+
+        delB.setOnClickListener(v -> {});
+
+        starB.setOnClickListener(v -> {
+            if (isImportant) {
+                starB.setImageResource(R.drawable.round_star_outline);
+                isImportant = false;
+            }
+            else {
+                starB.setImageResource(R.drawable.round_star);
+                isImportant = true;
+            }
+        });
+
+        compB.setOnCheckedChangeListener((v, isChecked) -> {
+            isCompleted = isChecked;
+        });
+
+
         cancelB.setOnClickListener(v -> dismiss());
 
         doneB.setOnClickListener(v -> {
             if (isTaskValid()) {
                 if (mode == 1) {
-                    Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(), dateE.getText().toString().trim(), selectedTimeMillis);
+                    creationTimeMillis = getCreationDateinMillis();
+                    Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(), dateE.getText().toString().trim(), selectedTimeMillis, creationTimeMillis);
+                    task.setImportant(isImportant);
+                    task.setCompleted(isCompleted);
                     taskListener.onTaskAdded(task);
                 }
                 else {
@@ -134,10 +176,14 @@ public class TaskDialog extends DialogFragment {
                     task.setDetail(detE.getText().toString().trim());
                     task.setDueDate(dateE.getText().toString().trim());
                     task.setDateInMillis(selectedTimeMillis);
+                    task.setImportant(isImportant);
+                    task.setCompleted(isCompleted);
                     taskListener.onTaskUpdated(task, taskIndex);
                 }
                 dismiss();
             }
+
+
         });
     }
 
@@ -166,6 +212,11 @@ public class TaskDialog extends DialogFragment {
             return true;
         }
         return false;
+    }
+
+    private long getCreationDateinMillis() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.getTimeInMillis();
     }
 
     public static void addTaskListener(TaskListener taskListener) {
