@@ -73,7 +73,9 @@ public class TaskFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         roomDao.getTasks().observe(getViewLifecycleOwner(), tasks -> {
+            Log.d("hdhdhds", "onViewCreated: ");
             adapter.submitList(tasks);
+
             if (tasks.isEmpty()) notfoundT.setVisibility(View.VISIBLE);
             else notfoundT.setVisibility(View.GONE);
         });
@@ -92,11 +94,6 @@ public class TaskFragment extends Fragment {
                     roomDao.insert(task);
                     requireActivity().runOnUiThread(() -> recyclerView.smoothScrollToPosition(0));
                 }).start();
-            }
-
-            @Override
-            public void onTaskUpdated(Task task, int taskIndex) {
-                new Thread(() -> roomDao.update(task)).start();
             }
         });
 

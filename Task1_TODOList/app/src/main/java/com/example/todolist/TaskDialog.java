@@ -1,5 +1,6 @@
 package com.example.todolist;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -21,6 +22,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.todolist.Room.RoomDB;
+import com.example.todolist.Room.RoomDao;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,10 +35,12 @@ public class TaskDialog extends DialogFragment {
 
     public interface TaskListener {
         void onTaskAdded(Task task);
-        void onTaskUpdated(Task task, int taskIndex);
+//        void onTaskUpdated(Task task, int taskIndex);
     }
 
     public static TaskListener taskListener;
+
+    private RoomDao roomDao;
 
     private int mode;
     private Task task;
@@ -96,6 +102,8 @@ public class TaskDialog extends DialogFragment {
         starB = view.findViewById(R.id.starB);
         delB = view.findViewById(R.id.delB);
 
+        roomDao = RoomDB.getDatabase(requireContext()).roomDao();
+
         setCancelable(false);
 
         return view;
@@ -105,7 +113,6 @@ public class TaskDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (mode == 2) {
             title.setText("Edit Task");
-            delB.setVisibility(View.GONE);
 
             titleE.setText(task.getTitle());
             detE.setText(task.getDetail());
@@ -116,6 +123,9 @@ public class TaskDialog extends DialogFragment {
             compB.setChecked(isCompleted);
             starB.setImageResource(isImportant ? R.drawable.round_star : R.drawable.round_star_outline);
             selectedTimeMillis = task.getDateInMillis();
+        }
+        else {
+            delB.setVisibility(View.GONE);
         }
 
         Calendar calendar = Calendar.getInstance();
@@ -140,9 +150,54 @@ public class TaskDialog extends DialogFragment {
             datePickerDialog.show();
         });
 
-        infoB.setOnClickListener(v -> {});
+        infoB.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            View viewD = getLayoutInflater().inflate(R.layout.del_alert_dialog, null);
+            builder.setView(viewD);
 
-        delB.setOnClickListener(v -> {});
+            Button cancel = viewD.findViewById(R.id.cancel_button);
+            Button delete = viewD.findViewById(R.id.del_button);
+
+            AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialogInterface -> {
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+            });
+            dialog.show();
+
+            cancel.setOnClickListener(v1 -> dialog.dismiss());
+            delete.setOnClickListener(v1 -> {
+                new Thread(() -> roomDao.delete(task)).start();
+                dialog.dismiss();
+            });
+        });
+
+        delB.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            View viewD = getLayoutInflater().inflate(R.layout.del_alert_dialog, null);
+            builder.setView(viewD);
+
+            Button cancel = viewD.findViewById(R.id.cancel_button);
+            Button delete = viewD.findViewById(R.id.del_button);
+
+            AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialogInterface -> {
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+            });
+            dialog.show();
+
+            cancel.setOnClickListener(v1 -> dialog.dismiss());
+            delete.setOnClickListener(v1 -> {
+                new Thread(() -> roomDao.delete(task)).start();
+                dialog.dismiss();
+                dismiss();
+            });
+        });
 
         starB.setOnClickListener(v -> {
             if (isImportant) {
@@ -166,19 +221,20 @@ public class TaskDialog extends DialogFragment {
             if (isTaskValid()) {
                 if (mode == 1) {
                     creationTimeMillis = getCreationDateinMillis();
-                    Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(), dateE.getText().toString().trim(), selectedTimeMillis, creationTimeMillis);
+                    Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
+                            dateE.getText().toString().trim(), selectedTimeMillis, creationTimeMillis);
                     task.setImportant(isImportant);
                     task.setCompleted(isCompleted);
                     taskListener.onTaskAdded(task);
                 }
                 else {
-                    task.setTitle(titleE.getText().toString().trim());
-                    task.setDetail(detE.getText().toString().trim());
-                    task.setDueDate(dateE.getText().toString().trim());
-                    task.setDateInMillis(selectedTimeMillis);
-                    task.setImportant(isImportant);
-                    task.setCompleted(isCompleted);
-                    taskListener.onTaskUpdated(task, taskIndex);
+                    Task newTask = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
+                            dateE.getText().toString().trim(), selectedTimeMillis, task.getCreationDateinMillis());
+                    newTask.setId(task.getId());
+                    newTask.setPos(task.getPos());
+                    newTask.setImportant(isImportant);
+                    newTask.setCompleted(isCompleted);
+                    new Thread(() -> roomDao.update(newTask)).start();
                 }
                 dismiss();
             }

@@ -1,6 +1,7 @@
 package com.example.todolist.Completed;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,9 +89,8 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
 
         if (task == null) return;
 
-        holder.starB.setVisibility(View.GONE);
-
         holder.title.setText(task.getTitle());
+        holder.title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         holder.dueDateT.setText(task.getDueDate());
 
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
@@ -100,6 +100,9 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         }
 
         holder.checkB.setChecked(task.isCompleted());
+
+        if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
+        else holder.starB.setImageResource(R.drawable.round_star_outline);
 
         long daysLeft = getDaysLeft(task.getDateInMillis());
         if (daysLeft == 0) {
@@ -113,16 +116,40 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         }
 
         holder.itemView.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(2, task, holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            TaskDialog taskDialog = new TaskDialog(2, getItem(pos), pos);
             taskDialog.show(fragmentManager, taskDialog.getTag());
         });
 
         holder.checkB.setOnCheckedChangeListener((v, isChecked) -> {
-            Task taskC = getItem(holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            Task taskC = getItem(pos);
             if (!isChecked) {
                 taskC.setCompleted(false);
                 new Thread(() -> roomDao.update(taskC)).start();
             }
+        });
+
+        holder.starB.setOnClickListener(v -> {
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            Task taskS = getItem(pos);
+            if (taskS.isImportant()) {
+                holder.starB.setImageResource(R.drawable.round_star_outline);
+                taskS.setImportant(false);
+            }
+            else {
+                holder.starB.setImageResource(R.drawable.round_star);
+                taskS.setImportant(true);
+            }
+            new Thread(() -> {
+                roomDao.update(taskS);
+            }).start();
         });
     }
 

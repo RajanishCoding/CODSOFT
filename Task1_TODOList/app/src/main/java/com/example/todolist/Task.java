@@ -1,5 +1,7 @@
 package com.example.todolist;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -87,6 +89,10 @@ public class Task {
     }
 
     public void setCompletionDateinMillis() {
+        if (!isCompleted) {
+            completedDateinMillis = null;
+            return;
+        }
         Calendar calendar = Calendar.getInstance();
         completedDateinMillis = calendar.getTimeInMillis();
     }
@@ -109,6 +115,7 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
+        setCompletionDateinMillis();
     }
 
     public boolean isImportant() { return isImportant; }
@@ -119,13 +126,15 @@ public class Task {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (getClass() != obj.getClass()) return false;
 
         Task task = (Task) obj;
+
+        Log.d("hdhdhd" , "equals: " + title + task.getTitle());
         return title.equals(task.title) &&
-                isCompleted == task.isCompleted &&
-                isImportant == task.isImportant &&
                 detail.equals(task.detail) &&
-                dateInMillis.equals(task.dateInMillis);
+                dateInMillis.equals(task.dateInMillis) &&
+                isCompleted == task.isCompleted &&
+                isImportant == task.isImportant;
     }
 }

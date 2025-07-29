@@ -53,6 +53,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         this.fragmentManager = fragmentManager;
     }
 
+
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView details;
@@ -99,8 +100,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             holder.details.setVisibility(View.VISIBLE);
         }
 
-        if (task.isCompleted()) holder.checkB.setChecked(true);
-        else holder.checkB.setChecked(false);
+        holder.checkB.setChecked(task.isCompleted());
 
         if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
         else holder.starB.setImageResource(R.drawable.round_star_outline);
@@ -117,12 +117,18 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         }
 
         holder.itemView.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(2, getItem(holder.getAdapterPosition()), holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            TaskDialog taskDialog = new TaskDialog(2, getItem(pos), pos);
             taskDialog.show(fragmentManager, taskDialog.getTag());
         });
 
         holder.checkB.setOnCheckedChangeListener((v, isChecked) -> {
-            Task taskC = getItem(holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            Task taskC = getItem(pos);
             if (isChecked) {
                 taskC.setCompleted(true);
                 new Thread(() -> roomDao.update(taskC)).start();
@@ -130,7 +136,10 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         });
 
         holder.starB.setOnClickListener(v -> {
-            Task taskS = getItem(holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            Task taskS = getItem(pos);
             if (taskS.isImportant()) {
                 holder.starB.setImageResource(R.drawable.round_star_outline);
                 taskS.setImportant(false);

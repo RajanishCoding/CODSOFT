@@ -114,11 +114,17 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
         }
 
         holder.itemView.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(2, task, holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            TaskDialog taskDialog = new TaskDialog(2, getItem(pos), pos);
             taskDialog.show(fragmentManager, taskDialog.getTag());
         });
 
         holder.checkB.setOnCheckedChangeListener((v, isChecked) -> {
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
             Task taskC = getItem(holder.getAdapterPosition());
             if (isChecked) {
                 taskC.setCompleted(true);
@@ -127,7 +133,10 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
         });
 
         holder.starB.setOnClickListener(v -> {
-            Task taskS = getItem(holder.getAdapterPosition());
+            int pos = holder.getAdapterPosition();
+            if (pos == RecyclerView.NO_POSITION) return;
+
+            Task taskS = getItem(pos);
             if (taskS.isImportant()) {
                 holder.starB.setImageResource(R.drawable.round_star_outline);
                 taskS.setImportant(false);
