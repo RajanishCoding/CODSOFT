@@ -152,11 +152,15 @@ public class TaskDialog extends DialogFragment {
 
         infoB.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            View viewD = getLayoutInflater().inflate(R.layout.del_alert_dialog, null);
+            View viewD = getLayoutInflater().inflate(R.layout.info_dialog, null);
             builder.setView(viewD);
 
-            Button cancel = viewD.findViewById(R.id.cancel_button);
-            Button delete = viewD.findViewById(R.id.del_button);
+            TextView title = viewD.findViewById(R.id.title);
+            TextView det = viewD.findViewById(R.id.detail);
+            TextView create = viewD.findViewById(R.id.create);
+            TextView due = viewD.findViewById(R.id.due);
+            TextView left = viewD.findViewById(R.id.left);
+            TextView comp = viewD.findViewById(R.id.complete);
 
             AlertDialog dialog = builder.create();
             dialog.setOnShowListener(dialogInterface -> {
@@ -167,11 +171,16 @@ public class TaskDialog extends DialogFragment {
             });
             dialog.show();
 
-            cancel.setOnClickListener(v1 -> dialog.dismiss());
-            delete.setOnClickListener(v1 -> {
-                new Thread(() -> roomDao.delete(task)).start();
-                dialog.dismiss();
-            });
+            title.setText(task.getTitle());
+            create.setText(getFullDateFromMillis(task.getCreationDateinMillis()));
+            due.setText(getFullDateFromMillis(task.getDateInMillis()));
+            left.setText(getDaysLeft(task.getDateInMillis()) + " days left");
+
+            if (task.getDetail().isEmpty()) det.setText("No Details");
+            else det.setText(task.getDetail());
+
+            if (task.getCompletedDateinMillis() == null) comp.setText("Not Completed yet");
+            else comp.setText(getFullDateFromMillis(task.getCompletedDateinMillis()));
         });
 
         delB.setOnClickListener(v -> {
@@ -238,8 +247,6 @@ public class TaskDialog extends DialogFragment {
                 }
                 dismiss();
             }
-
-
         });
     }
 
@@ -274,6 +281,34 @@ public class TaskDialog extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         return calendar.getTimeInMillis();
     }
+
+    public String getFullDateFromMillis(Long millis) {
+        if (millis == null) return null;
+
+        Date date = new Date(millis);
+        SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy", Locale.getDefault());
+        return str.format(date);
+    }
+
+    private long getDaysLeft(long millis) {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        Calendar taskDay = Calendar.getInstance();
+        taskDay.setTimeInMillis(millis);
+        taskDay.set(Calendar.HOUR_OF_DAY, 0);
+        taskDay.set(Calendar.MINUTE, 0);
+        taskDay.set(Calendar.SECOND, 0);
+        taskDay.set(Calendar.MILLISECOND, 0);
+
+        long diffMillis = taskDay.getTimeInMillis() - today.getTimeInMillis();
+
+        return TimeUnit.MILLISECONDS.toDays(diffMillis);
+    }
+
 
     public static void addTaskListener(TaskListener taskListener) {
         TaskDialog.taskListener = taskListener;

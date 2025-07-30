@@ -89,7 +89,7 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
         if (task == null) return;
 
         holder.title.setText(task.getTitle());
-        holder.dueDateT.setText(task.getDueDate());
+        holder.dueDateT.setText(String.valueOf(task.getPos()));
 
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {

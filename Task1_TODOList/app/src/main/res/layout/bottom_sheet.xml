@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
+    
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="13dp"
+        android:layout_marginVertical="18dp"
+        app:cardBackgroundColor="@color/bottomBar"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingHorizontal="25dp"
+                    android:paddingVertical="12dp"
+                    android:text="Sort By"
+                    android:textColor="@color/text"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/orderB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_marginEnd="10dp"
+                    android:text="ASC"
+                    android:textColor="@color/text"
+                    android:drawableLeft="@drawable/asc_sort"
+                    android:drawablePadding="5dp"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height=".5dp"
+                android:background="@android:color/darker_gray" />
+
+            <Button
+                android:id="@+id/myOrderB"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:paddingHorizontal="28dp"
+                android:text="My Order"
+                android:textSize="16sp"
+                android:textColor="@color/text"
+                android:textAlignment="textStart"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/dueDateB"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:paddingHorizontal="28dp"
+                android:text="Due Date"
+                android:textSize="16sp"
+                android:textColor="@color/text"
+                android:textAlignment="textStart"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</FrameLayout>

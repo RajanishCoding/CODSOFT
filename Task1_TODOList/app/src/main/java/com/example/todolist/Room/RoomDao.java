@@ -22,29 +22,57 @@ public interface RoomDao {
     @Update
     void update(Task task);
 
+    @Update
+    void updateTasks(List<Task> taskList);
+
     @Delete
     void delete(Task task);
 
+    @Query("SELECT * FROM task_table WHERE id = :id")
+    Task getTaskById(String id);
+
+
 
     @Query("select * from task_table where isCompleted = 0 order by pos desc")
-    LiveData<List<Task>> getTasks();
+    LiveData<List<Task>> getTasksAsc();
+
+    @Query("select * from task_table where isCompleted = 0 order by pos asc")
+    LiveData<List<Task>> getTasksDsc();
+
 
     @Query("select * from task_table where isCompleted = 1 order by pos desc")
-    LiveData<List<Task>> getCompletedTasks();
+    LiveData<List<Task>> getCompletedTasksAsc();
+
+    @Query("select * from task_table where isCompleted = 1 order by pos asc")
+    LiveData<List<Task>> getCompletedTasksDsc();
+
 
     @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by pos desc")
-    LiveData<List<Task>> getImportantTasks();
+    LiveData<List<Task>> getImportantTasksAsc();
+
+    @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by pos asc")
+    LiveData<List<Task>> getImportantTasksDsc();
 
 
-    @Query("select * from task_table order by pos asc")
-    List<Task> getAllTasksByPositionAsc();
 
-    @Query("select * from task_table order by pos desc")
-    List<Task> getAllTasksByPositionDesc();
+    @Query("select * from task_table where isCompleted = 0 order by dateInMillis asc")
+    LiveData<List<Task>> getTasksByDueAsc();
 
-    @Query("select * from task_table order by dateInMillis asc")
-    List<Task> getAllTasksByDueDateAsc();
+    @Query("select * from task_table where isCompleted = 0 order by dateInMillis desc")
+    LiveData<List<Task>> getTasksByDueDsc();
 
-    @Query("select * from task_table order by dateInMillis desc")
-    List<Task> getAllTasksByDueDateDesc();
+
+    @Query("select * from task_table where isCompleted = 1 order by dateInMillis asc")
+    LiveData<List<Task>> getCompletedTasksByDueAsc();
+
+    @Query("select * from task_table where isCompleted = 1 order by dateInMillis desc")
+    LiveData<List<Task>> getCompletedTasksByDueDsc();
+
+
+    @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by dateInMillis asc")
+    LiveData<List<Task>> getImportantTasksByDueAsc();
+
+    @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by dateInMillis desc")
+    LiveData<List<Task>> getImportantTasksByDueDsc();
+
 }
