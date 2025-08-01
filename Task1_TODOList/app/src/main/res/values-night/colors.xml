@@ -3,14 +3,32 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="toolbar">#BDC8FF</color>
+    <color name="toolbarG">#98A5CE</color>
+    <color name="toolbar">#7585B3</color>
 
     <color name="buttons">#C3ADFF</color>
     
     <color name="item">#B9B9B9</color>
 
     <color name="text">@color/white</color>
+    <color name="textGrey">#D3D3D3</color>
 
     <color name="textRev">@color/black</color>
+
+    <color name="starTint">#C0C0C0</color>
+
+    <color name="line">#000000</color>
+
+
+    <color name="overlayButton">#1AFFFFFF</color>
+
+    <color name="bottomBar">#1E1C25</color>
+    <color name="sidebar">#E6101010</color>
+
+
+    <color name="overlayItemDetails">#30283E</color>
+
+    <color name="overlayListSelector">#597F8794</color>
+    <color name="overlayList">#1AC8C8C8</color>
 
 </resources>

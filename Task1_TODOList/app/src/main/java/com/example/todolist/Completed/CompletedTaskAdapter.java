@@ -21,8 +21,11 @@ import com.example.todolist.Room.RoomDao;
 import com.example.todolist.Task;
 import com.example.todolist.TaskDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter.TaskViewHolder> {
@@ -91,7 +94,7 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
 
         holder.title.setText(task.getTitle());
         holder.title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.dueDateT.setText(task.getDueDate());
+        holder.dueDateT.setVisibility(View.GONE);
 
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {
@@ -104,16 +107,7 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
         else holder.starB.setImageResource(R.drawable.round_star_outline);
 
-        long daysLeft = getDaysLeft(task.getDateInMillis());
-        if (daysLeft == 0) {
-            holder.leftDaysT.setText("Active");
-        }
-        else if (daysLeft < 0) {
-            holder.leftDaysT.setText("Overdue");
-        }
-        else {
-            holder.leftDaysT.setText(daysLeft + "d left");
-        }
+        holder.leftDaysT.setText("Completed: " + getFullDateFromMillis(task.getCompletedDateinMillis()));
 
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
@@ -178,6 +172,14 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         long diffMillis = taskDay.getTimeInMillis() - today.getTimeInMillis();
 
         return TimeUnit.MILLISECONDS.toDays(diffMillis);
+    }
+
+    public String getFullDateFromMillis(Long millis) {
+        if (millis == null) return null;
+
+        Date date = new Date(millis);
+        SimpleDateFormat str = new SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault());
+        return str.format(date);
     }
 
     @Override

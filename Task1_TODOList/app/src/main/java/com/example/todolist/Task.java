@@ -98,7 +98,7 @@ public class Task {
     }
 
     public void setCompletedDateinMillis(Long completedDateinMillis) {
-        this.completedDateinMillis = completedDateinMillis;
+//        this.completedDateinMillis = completedDateinMillis;
     }
 
     public int getLeftDays() {

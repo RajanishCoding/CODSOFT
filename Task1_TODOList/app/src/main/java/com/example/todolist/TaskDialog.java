@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -172,15 +171,22 @@ public class TaskDialog extends DialogFragment {
             dialog.show();
 
             title.setText(task.getTitle());
-            create.setText(getFullDateFromMillis(task.getCreationDateinMillis()));
-            due.setText(getFullDateFromMillis(task.getDateInMillis()));
-            left.setText(getDaysLeft(task.getDateInMillis()) + " days left");
 
             if (task.getDetail().isEmpty()) det.setText("No Details");
+
             else det.setText(task.getDetail());
 
+            create.setText(getFullDateTimeFromMillis(task.getCreationDateinMillis()));
+
+            due.setText(getFullDateFromMillis(task.getDateInMillis()));
+
+            long days = getDaysLeft(task.getDateInMillis());
+            if (days == 0) left.setText("Active • Today");
+            else if (days < 0) left.setText("Overdue • " + -days + " days ago");
+            else left.setText(days + " days left");
+
             if (task.getCompletedDateinMillis() == null) comp.setText("Not Completed yet");
-            else comp.setText(getFullDateFromMillis(task.getCompletedDateinMillis()));
+            else comp.setText(getFullDateTimeFromMillis(task.getCompletedDateinMillis()));
         });
 
         delB.setOnClickListener(v -> {
@@ -280,6 +286,15 @@ public class TaskDialog extends DialogFragment {
     private long getCreationDateinMillis() {
         Calendar calendar = Calendar.getInstance();
         return calendar.getTimeInMillis();
+    }
+
+
+    public String getFullDateTimeFromMillis(Long millis) {
+        if (millis == null) return null;
+
+        Date date = new Date(millis);
+        SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy\nhh:mm a", Locale.getDefault());
+        return str.format(date);
     }
 
     public String getFullDateFromMillis(Long millis) {

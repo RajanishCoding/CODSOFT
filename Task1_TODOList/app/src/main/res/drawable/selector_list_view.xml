@@ -2,19 +2,19 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
         <item android:state_selected="true">
             <shape android:shape="rectangle">
-                <solid android:color="@color/overlayListLightSelector" /> <!-- Semi-transparent black overlay -->
+                <solid android:color="@color/overlayListSelector" /> <!-- Semi-transparent black overlay -->
                 <corners android:radius="20dp" />
             </shape>
         </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/overlayListLightSelector" /> <!-- Semi-transparent black overlay -->
+            <solid android:color="@color/overlayListSelector" /> <!-- Semi-transparent black overlay -->
             <corners android:radius="20dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/overlayListLight" /> <!-- No overlay -->
+            <solid android:color="@color/overlayList" /> <!-- No overlay -->
             <corners android:radius="20dp" />
         </shape>
     </item>

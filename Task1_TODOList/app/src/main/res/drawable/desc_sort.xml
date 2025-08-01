@@ -2,7 +2,8 @@
     android:width="28dp"
     android:height="28dp"
     android:viewportWidth="256"
-    android:viewportHeight="256">
+    android:viewportHeight="256"
+    android:tint="@color/textGrey">
 
     <path
         android:strokeColor="#000000"

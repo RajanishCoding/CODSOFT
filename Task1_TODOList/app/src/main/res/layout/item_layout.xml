@@ -26,7 +26,8 @@
             android:paddingStart="8dp"
             android:text="Hello World"
             android:textSize="18sp"
-            android:maxLines="2"
+            android:textColor="@color/text"
+            android:maxLines="1"
             android:ellipsize="end"/>
 
         <TextView
@@ -36,6 +37,7 @@
             android:layout_marginBottom="5dp"
             android:paddingStart="8dp"
             android:text="Hello World"
+            android:textColor="@color/textGrey"
             android:maxLines="3"
             android:ellipsize="end"
             android:visibility="visible" />
@@ -64,7 +66,7 @@
                 android:paddingHorizontal="8dp"
                 android:background="@drawable/shape_items_details"
                 android:text="15d left"
-                android:textColor="#B3000000"/>
+                android:textColor="@color/textGrey"/>
 
 
             <TextView
@@ -75,7 +77,7 @@
                 android:paddingHorizontal="8dp"
                 android:background="@drawable/shape_items_details"
                 android:text="Mon, 13 Jul, 2025"
-                android:textColor="#B3000000"/>
+                android:textColor="@color/textGrey"/>
 
         </LinearLayout>
     </LinearLayout>

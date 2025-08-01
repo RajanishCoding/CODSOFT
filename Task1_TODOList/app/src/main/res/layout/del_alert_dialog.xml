@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:layout_marginVertical="5dp"
-        app:cardBackgroundColor="@color/bottomBarLight"
+        app:cardBackgroundColor="@color/bottomBar"
         app:cardCornerRadius="40dp"
         app:cardElevation="3dp">
 

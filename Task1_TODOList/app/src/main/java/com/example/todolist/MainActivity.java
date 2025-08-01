@@ -5,31 +5,21 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class MainActivity extends AppCompatActivity {
+
+    private SharedPreferences prefs;
+    private Editor editor;
 
     private TabLayout tabLayout;
     private ViewPageAdapter viewPageAdapter;
@@ -40,20 +30,24 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton sortB;
     private ImageButton modeB;
 
+    private int themeMode;
+
     private int sortType;
     private boolean sortOrder;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefs = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        editor = prefs.edit();
+
+        themeMode = prefs.getInt("themeMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        setThemeModeStart();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.toolbar));
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-        SharedPreferences prefs = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        Editor editor = prefs.edit();
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.toolbarG));
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -64,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         sortB = findViewById(R.id.sortB);
         modeB = findViewById(R.id.modeB);
 
+
+        modeB.setImageResource(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO ? R.drawable.round_light_mode : R.drawable.round_dark_mode);
 
         viewPageAdapter = new ViewPageAdapter(this);
         viewPager.setAdapter(viewPageAdapter);
@@ -91,5 +87,34 @@ public class MainActivity extends AppCompatActivity {
             BottomDialog bottomSheet = new BottomDialog(sortType, sortOrder);
             bottomSheet.show(getSupportFragmentManager(), "MyBottomSheet");
         });
+
+        modeB.setOnClickListener(v -> {
+            if (themeMode == 2) themeMode = 1;
+            else themeMode = 2;
+            setThemeMode(themeMode);
+        });
+    }
+
+    private void setThemeModeStart() {
+        int current = AppCompatDelegate.getDefaultNightMode();
+
+        if (themeMode != current) {
+            AppCompatDelegate.setDefaultNightMode(themeMode);
+        }
+
+        // -1 - follow, 1- Light, 2 - Dark
+    }
+
+    private void setThemeMode(int mode) {
+        int saved = prefs.getInt("themeMode", -1);
+
+        if (saved == mode) {
+            return;
+        }
+
+        editor.putInt("themeMode", mode);
+        editor.apply();
+
+        AppCompatDelegate.setDefaultNightMode(mode);
     }
 }
