@@ -2,6 +2,7 @@ package com.example.todolist.Active;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,7 +131,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
             Task taskC = getItem(pos);
             if (isChecked) {
-                taskC.setCompleted(true);
+                taskC.setCompletion(true);
                 new Thread(() -> roomDao.update(taskC)).start();
             }
         });
@@ -142,11 +143,11 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             Task taskS = getItem(pos);
             if (taskS.isImportant()) {
                 holder.starB.setImageResource(R.drawable.round_star_outline);
-                taskS.setImportant(false);
+                taskS.setImportants(false);
             }
             else {
                 holder.starB.setImageResource(R.drawable.round_star);
-                taskS.setImportant(true);
+                taskS.setImportants(true);
             }
             new Thread(() -> {
                 roomDao.update(taskS);

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPageAdapter viewPageAdapter;
     private ViewPager2 viewPager;
+    private int selectedPos;
 
     private Toolbar toolbar;
 
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        selectedPos = savedInstanceState != null ? savedInstanceState.getInt("itemPos", 1) : 1;
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.toolbarG));
 
@@ -78,14 +82,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attach();
 
-        viewPager.setCurrentItem(1, true);
-
+        viewPager.setCurrentItem(selectedPos, true);
+        tabLayout.selectTab(tabLayout.getTabAt(selectedPos));
 
         sortB.setOnClickListener(v -> {
-            sortType = prefs.getInt("sortType", 0);
-            sortOrder = prefs.getBoolean("sortOrder", true);
-            BottomDialog bottomSheet = new BottomDialog(sortType, sortOrder);
-            bottomSheet.show(getSupportFragmentManager(), "MyBottomSheet");
+            if (viewPager.getCurrentItem() == 0) {
+                openStarSortDialog();
+            }
+            else if (viewPager.getCurrentItem() == 1) {
+                openTaskSortDialog();
+            }
+            else {
+                openCompleteSortDialog();
+            }
         });
 
         modeB.setOnClickListener(v -> {
@@ -116,5 +125,32 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         AppCompatDelegate.setDefaultNightMode(mode);
+    }
+
+    private void openTaskSortDialog() {
+        sortType = prefs.getInt("sortType_task", 0);
+        sortOrder = prefs.getBoolean("sortOrder_task", true);
+        BottomDialog bottomSheet = new BottomDialog(1, sortType, sortOrder);
+        bottomSheet.show(getSupportFragmentManager(), "MyBottomSheet");
+    }
+
+    private void openStarSortDialog() {
+        sortType = prefs.getInt("sortType_star", 0);
+        sortOrder = prefs.getBoolean("sortOrder_star", true);
+        BottomDialog bottomSheet = new BottomDialog(0, sortType, sortOrder);
+        bottomSheet.show(getSupportFragmentManager(), "MyBottomSheet");
+    }
+
+    private void openCompleteSortDialog() {
+        sortType = prefs.getInt("sortType_comp", 0);
+        sortOrder = prefs.getBoolean("sortOrder_comp", true);
+        BottomDialog bottomSheet = new BottomDialog(2, sortType, sortOrder);
+        bottomSheet.show(getSupportFragmentManager(), "MyBottomSheet");
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt("itemPos", viewPager.getCurrentItem());
     }
 }

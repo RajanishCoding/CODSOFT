@@ -2,7 +2,6 @@ package com.example.todolist.Starred;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,15 +13,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.util.Pair;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.todolist.Active.TaskAdapter;
 import com.example.todolist.R;
 import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
@@ -47,7 +42,7 @@ public class StarFragment extends Fragment {
     private int sortType;
     private boolean sortOrder;
 
-    private LiveData<List<Task>> currentLiveData;
+    private LiveData<List<Task>> liveData;
 
     public StarFragment() {
         // Required empty public constructor
@@ -88,19 +83,21 @@ public class StarFragment extends Fragment {
             sortType = config.first;
             sortOrder = config.second;
 
-            LiveData<List<Task>> liveData;
-            if (sortType == 0) {
-                liveData = sortOrder ? roomDao.getImportantTasksAsc() : roomDao.getImportantTasksDsc();
-            } else {
-                liveData = sortOrder ? roomDao.getImportantTasksByDueAsc() : roomDao.getImportantTasksByDueDsc();
+            if (sortViewModel.getPos() != null && sortViewModel.getPos() != 0) return;
+
+            editor.putInt("sortType_star", sortType);
+            editor.putBoolean("sortOrder_star", sortOrder);
+            editor.apply();
+
+            if (liveData != null) {
+                liveData.removeObservers(getViewLifecycleOwner());
             }
 
-            if (currentLiveData != null) {
-                currentLiveData.removeObservers(getViewLifecycleOwner());
-            }
+            if (sortType == 0) liveData = sortOrder ? roomDao.getImportantTasksAsc() : roomDao.getImportantTasksDsc();
+            else if (sortType == 1) liveData = sortOrder ? roomDao.getImportantTasksByStarAsc() : roomDao.getImportantTasksByStarDsc();
+            else liveData = sortOrder ? roomDao.getImportantTasksByDueAsc() : roomDao.getImportantTasksByDueDsc();
 
-            currentLiveData = liveData;
-            currentLiveData.observe(getViewLifecycleOwner(), tasks -> {
+            liveData.observe(getViewLifecycleOwner(), tasks -> {
                 adapter.submitList(tasks);
                 setNotFoundView(tasks.isEmpty());
             });

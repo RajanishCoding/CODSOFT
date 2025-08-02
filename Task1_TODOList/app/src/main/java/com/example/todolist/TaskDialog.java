@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,6 +161,7 @@ public class TaskDialog extends DialogFragment {
             TextView due = viewD.findViewById(R.id.due);
             TextView left = viewD.findViewById(R.id.left);
             TextView comp = viewD.findViewById(R.id.complete);
+            TextView star = viewD.findViewById(R.id.starred);
 
             AlertDialog dialog = builder.create();
             dialog.setOnShowListener(dialogInterface -> {
@@ -187,6 +189,9 @@ public class TaskDialog extends DialogFragment {
 
             if (task.getCompletedDateinMillis() == null) comp.setText("Not Completed yet");
             else comp.setText(getFullDateTimeFromMillis(task.getCompletedDateinMillis()));
+
+            if (task.getStarredDateinMillis() == null) star.setText("Not Marked as Important");
+            else star.setText(getFullDateTimeFromMillis(task.getStarredDateinMillis()));
         });
 
         delB.setOnClickListener(v -> {
@@ -247,8 +252,18 @@ public class TaskDialog extends DialogFragment {
                             dateE.getText().toString().trim(), selectedTimeMillis, task.getCreationDateinMillis());
                     newTask.setId(task.getId());
                     newTask.setPos(task.getPos());
-                    newTask.setImportant(isImportant);
-                    newTask.setCompleted(isCompleted);
+
+                    if (isCompleted != task.isCompleted()) newTask.setCompletion(isCompleted);
+                    else {
+                        newTask.setCompleted(isCompleted);
+                        newTask.setCompletedDateinMillis(task.getCompletedDateinMillis());
+                    }
+                    if (isImportant != task.isImportant()) newTask.setImportants(isImportant);
+                    else {
+                        newTask.setImportant(isImportant);
+                        newTask.setStarredDateinMillis(task.getStarredDateinMillis());
+                    }
+
                     new Thread(() -> roomDao.update(newTask)).start();
                 }
                 dismiss();

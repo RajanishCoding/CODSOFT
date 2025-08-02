@@ -64,7 +64,7 @@
                 android:background="@android:color/darker_gray" />
 
             <Button
-                android:id="@+id/myOrderB"
+                android:id="@+id/order1B"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@color/transparent"
@@ -76,7 +76,19 @@
                 android:layout_weight="1"/>
 
             <Button
-                android:id="@+id/dueDateB"
+                android:id="@+id/order2B"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:paddingHorizontal="28dp"
+                android:text="Creation Date"
+                android:textSize="16sp"
+                android:textColor="@color/text"
+                android:textAlignment="textStart"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/order3B"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@color/transparent"
@@ -87,7 +99,7 @@
                 android:textAlignment="textStart"
                 android:layout_weight="1"/>
 
-    </LinearLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 

@@ -89,7 +89,7 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
         if (task == null) return;
 
         holder.title.setText(task.getTitle());
-        holder.dueDateT.setText(String.valueOf(task.getPos()));
+        holder.dueDateT.setText(String.valueOf(task.getDueDate()));
 
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {
@@ -127,7 +127,7 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
 
             Task taskC = getItem(holder.getAdapterPosition());
             if (isChecked) {
-                taskC.setCompleted(true);
+                taskC.setCompletion(true);
                 new Thread(() -> roomDao.update(taskC)).start();
             }
         });
@@ -139,11 +139,9 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
             Task taskS = getItem(pos);
             if (taskS.isImportant()) {
                 holder.starB.setImageResource(R.drawable.round_star_outline);
-                taskS.setImportant(false);
+                taskS.setImportants(false);
             }
-            new Thread(() -> {
-                roomDao.update(taskS);
-            }).start();
+            new Thread(() -> roomDao.update(taskS)).start();
         });
     }
 

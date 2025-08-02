@@ -15,14 +15,15 @@ public class Task {
     private String id;
 
     private int pos;
+
     private String title;
     private String detail;
     private String dueDate;
-
     private Long dateInMillis;
     private Long creationDateinMillis;
 
     private Long completedDateinMillis;
+    private Long starredDateinMillis;
 
     private int leftDays;
     
@@ -84,22 +85,23 @@ public class Task {
         return creationDateinMillis;
     }
 
+
     public Long getCompletedDateinMillis() {
         return completedDateinMillis;
     }
 
-    public void setCompletionDateinMillis() {
-        if (!isCompleted) {
-            completedDateinMillis = null;
-            return;
-        }
-        Calendar calendar = Calendar.getInstance();
-        completedDateinMillis = calendar.getTimeInMillis();
+    public void setCompletedDateinMillis(Long completedDateinMillis) {
+        this.completedDateinMillis = completedDateinMillis;
     }
 
-    public void setCompletedDateinMillis(Long completedDateinMillis) {
-//        this.completedDateinMillis = completedDateinMillis;
+    public Long getStarredDateinMillis() {
+        return starredDateinMillis;
     }
+
+    public void setStarredDateinMillis(Long starredDateinMillis) {
+        this.starredDateinMillis = starredDateinMillis;
+    }
+
 
     public int getLeftDays() {
         return leftDays;
@@ -115,14 +117,46 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
-        setCompletionDateinMillis();
     }
 
-    public boolean isImportant() { return isImportant; }
+    public void setCompletion(boolean completed) {
+        isCompleted = completed;
+        setCompletedDateinMillis();
+    }
 
-    public void setImportant(boolean important) { isImportant = important; }
+    public boolean isImportant() {
+        return isImportant;
+    }
 
+    public void setImportant(boolean important) {
+        isImportant = important;
+    }
     
+    public void setImportants(boolean important) {
+        isImportant = important;
+        setStarredDateinMillis();
+    }
+
+
+    public void setCompletedDateinMillis() {
+        if (!isCompleted) {
+            completedDateinMillis = null;
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        completedDateinMillis = calendar.getTimeInMillis();
+    }
+
+    public void setStarredDateinMillis() {
+        if (!isImportant) {
+            starredDateinMillis = null;
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        starredDateinMillis = calendar.getTimeInMillis();
+    }
+    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

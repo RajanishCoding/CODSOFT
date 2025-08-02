@@ -2,7 +2,6 @@ package com.example.todolist.Completed;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +23,6 @@ import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
 import com.example.todolist.SortViewModel;
 import com.example.todolist.Task;
-import com.example.todolist.Active.TaskAdapter;
-import com.example.todolist.TaskDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +42,7 @@ public class CompletedFragment extends Fragment {
     private int sortType;
     private boolean sortOrder;
 
-    private LiveData<List<Task>> currentLiveData;
+    private LiveData<List<Task>> liveData;
 
 
     public CompletedFragment() {
@@ -89,19 +85,21 @@ public class CompletedFragment extends Fragment {
             sortType = config.first;
             sortOrder = config.second;
 
-            LiveData<List<Task>> liveData;
-            if (sortType == 0) {
-                liveData = sortOrder ? roomDao.getCompletedTasksAsc() : roomDao.getCompletedTasksDsc();
-            } else {
-                liveData = sortOrder ? roomDao.getCompletedTasksByDueAsc() : roomDao.getCompletedTasksByDueDsc();
+            if (sortViewModel.getPos() != null && sortViewModel.getPos() != 2) return;
+
+            editor.putInt("sortType_comp", sortType);
+            editor.putBoolean("sortOrder_comp", sortOrder);
+            editor.apply();
+
+            if (liveData != null) {
+                liveData.removeObservers(getViewLifecycleOwner());
             }
 
-            if (currentLiveData != null) {
-                currentLiveData.removeObservers(getViewLifecycleOwner());
-            }
+            if (sortType == 0) liveData = sortOrder ? roomDao.getCompletedTasksAsc() : roomDao.getCompletedTasksDsc();
+            else if (sortType == 1) liveData = sortOrder ? roomDao.getCompletedTasksByCompAsc() : roomDao.getCompletedTasksByCompDsc();
+            else liveData = sortOrder ? roomDao.getCompletedTasksByCreateAsc() : roomDao.getCompletedTasksByCreateDsc();
 
-            currentLiveData = liveData;
-            currentLiveData.observe(getViewLifecycleOwner(), tasks -> {
+            liveData.observe(getViewLifecycleOwner(), tasks -> {
                 adapter.submitList(tasks);
                 setNotFoundView(tasks.isEmpty());
             });

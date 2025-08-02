@@ -3,8 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="toolbarG">#98A5CE</color>
-    <color name="toolbar">#7585B3</color>
+    <color name="toolbarG">#030520</color>
+    <color name="toolbar">#040627</color>
 
     <color name="buttons">#C3ADFF</color>
     
@@ -22,7 +22,7 @@
 
     <color name="overlayButton">#1AFFFFFF</color>
 
-    <color name="bottomBar">#1E1C25</color>
+    <color name="bottomBar">#171320</color>
     <color name="sidebar">#E6101010</color>
 
 

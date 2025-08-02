@@ -2,7 +2,6 @@ package com.example.todolist.Active;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,13 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -55,7 +52,7 @@ public class TaskFragment extends Fragment {
     private int sortType;
     private boolean sortOrder;
 
-    private LiveData<List<Task>> currentLiveData;
+    private LiveData<List<Task>> liveData;
 
 
     public TaskFragment() {
@@ -97,21 +94,23 @@ public class TaskFragment extends Fragment {
             sortType = config.first;
             sortOrder = config.second;
 
+            if (sortViewModel.getPos() != null && sortViewModel.getPos() != 1) return;
+
+            editor.putInt("sortType_task", sortType);
+            editor.putBoolean("sortOrder_task", sortOrder);
+            editor.apply();
+
             Log.d("ddjdjd", "onViewCreated: " + sortType + sortOrder);
 
-            LiveData<List<Task>> liveData;
-            if (sortType == 0) {
-                liveData = sortOrder ? roomDao.getTasksAsc() : roomDao.getTasksDsc();
-            } else {
-                liveData = sortOrder ? roomDao.getTasksByDueAsc() : roomDao.getTasksByDueDsc();
+            if (liveData != null) {
+                liveData.removeObservers(getViewLifecycleOwner());
             }
 
-            if (currentLiveData != null) {
-                currentLiveData.removeObservers(getViewLifecycleOwner());
-            }
+            if (sortType == 0) liveData = sortOrder ? roomDao.getTasksAsc() : roomDao.getTasksDsc();
+            else if (sortType == 1) liveData = sortOrder ? roomDao.getTasksByCreateAsc() : roomDao.getTasksByCreateDsc();
+            else liveData = sortOrder ? roomDao.getTasksByDueAsc() : roomDao.getTasksByDueDsc();
 
-            currentLiveData = liveData;
-            currentLiveData.observe(getViewLifecycleOwner(), tasks -> {
+            liveData.observe(getViewLifecycleOwner(), tasks -> {
                 Log.d("ddjd34jd", "onViewCreated: " + sortType + sortOrder);
                 adapter.submitList(tasks);
                 setNotFoundView(tasks.isEmpty());

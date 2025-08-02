@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
 
-    <color name="toolbarG">#DFE3FF</color>
+    <color name="toolbarG">#DBE0FD</color>
     <color name="toolbar">#C9D2FB</color>
 
     <color name="buttons">#ADD2FF</color>
@@ -22,7 +22,7 @@
 
     <color name="overlayButton">#1A000000</color>
 
-    <color name="bottomBar">#D7D3DF</color>
+    <color name="bottomBar">#D1CED5</color>
     <color name="sidebar">#80373737</color>
 
     <color name="BottomBar">#C9D1E8</color>
