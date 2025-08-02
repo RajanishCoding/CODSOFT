@@ -43,7 +43,7 @@ public class TaskFragment extends Fragment {
     private RecyclerView recyclerView;
     private TaskAdapter adapter;
 
-    private Button addTaskB;
+    private ImageButton addTaskB;
     private CheckBox markCompletedB;
     private ImageButton markStarB;
 
