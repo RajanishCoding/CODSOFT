@@ -31,6 +31,8 @@ public interface RoomDao {
     @Query("SELECT * FROM task_table WHERE id = :id")
     Task getTaskById(String id);
 
+    @Query("select count(*) from task_table")
+    int getTotalTaskCount();
 
 
     @Query("select * from task_table where isCompleted = 0 order by pos desc")
@@ -39,10 +41,10 @@ public interface RoomDao {
     @Query("select * from task_table where isCompleted = 0 order by pos asc")
     LiveData<List<Task>> getTasksDsc();
 
-    @Query("select * from task_table where isCompleted = 0 order by creationDateinMillis asc")
+    @Query("select * from task_table where isCompleted = 0 order by creationDateinMillis desc")
     LiveData<List<Task>> getTasksByCreateAsc();
 
-    @Query("select * from task_table where isCompleted = 0 order by creationDateinMillis desc")
+    @Query("select * from task_table where isCompleted = 0 order by creationDateinMillis asc")
     LiveData<List<Task>> getTasksByCreateDsc();
 
     @Query("select * from task_table where isCompleted = 0 order by dateInMillis asc")

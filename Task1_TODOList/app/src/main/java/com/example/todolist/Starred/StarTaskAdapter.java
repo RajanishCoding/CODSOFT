@@ -59,6 +59,7 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
 //        TextView statusT;
         TextView leftDaysT;
         TextView dueDateT;
+        TextView priorityT;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -69,6 +70,7 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
 //            statusT = itemView.findViewById(R.id.statusT);
             leftDaysT = itemView.findViewById(R.id.leftDaysT);
             dueDateT = itemView.findViewById(R.id.dueDateT);
+            priorityT = itemView.findViewById(R.id.priorityT);
         }
     }
 
@@ -102,6 +104,8 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
         if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
         else holder.starB.setImageResource(R.drawable.round_star_outline);
 
+        holder.priorityT.setText("Priority: " + task.getPriority());
+
         long daysLeft = getDaysLeft(task.getDateInMillis());
         if (daysLeft == 0) {
             holder.leftDaysT.setText("Active");
@@ -117,7 +121,7 @@ public class StarTaskAdapter extends ListAdapter<Task, StarTaskAdapter.TaskViewH
             int pos = holder.getAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
 
-            TaskDialog taskDialog = new TaskDialog(2, getItem(pos), pos);
+            TaskDialog taskDialog = new TaskDialog(-1, 2, getItem(pos));
             taskDialog.show(fragmentManager, taskDialog.getTag());
         });
 

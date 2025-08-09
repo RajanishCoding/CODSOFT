@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
 
-    <color name="toolbarG">#DBE0FD</color>
+    <color name="toolbarG">#D7DDFF</color>
     <color name="toolbar">#C9D2FB</color>
 
     <color name="buttons">#ADD2FF</color>
@@ -19,6 +19,7 @@
     <color name="starTint">#565656</color>
 
     <color name="line">#40000000</color>
+    <color name="lineRev">#FFFFFF</color>
 
     <color name="overlayButton">#1A000000</color>
 
@@ -30,6 +31,8 @@
     <color name="bottomBarButtonTint">#000000</color>
 
     <color name="overlayItemDetails">#C5C8DF</color>
+    <color name="overlayItemDetails_2">#DFCCC5</color>
+    <color name="overlayItemDetails_3">#C5DFCC</color>
 
     <color name="overlayListSelector">#59697379</color>
     <color name="overlayList">#1A373737</color>

@@ -79,31 +79,78 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="30dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
-            <EditText
-                android:id="@+id/titleE"
+            <!-- Title -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:hint="Enter Title"/>
+                android:hint="Title">
 
-            <EditText
-                android:id="@+id/detE"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/titleE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Details -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:hint="Enter Details (Optional)"/>
+                android:hint="Details (Optional)">
 
-            <EditText
-                android:id="@+id/datePickerE"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/detE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:lines="1"
+                    android:scrollHorizontally="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Date Picker -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:hint="Select Date"
-                android:focusable="false"
-                android:inputType="date" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="Select Date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/datePickerE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Priority Selection -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:id="@+id/priorityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select Priority"
+                app:boxBackgroundMode="outline">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/priorityDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="None"
+
+                    android:background="@null"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+
 
 
         <!-- Buttons Layout -->

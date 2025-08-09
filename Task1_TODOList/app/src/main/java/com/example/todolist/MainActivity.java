@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+    private ImageButton addTaskB;
     private ImageButton sortB;
     private ImageButton modeB;
 
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
 
+        addTaskB = findViewById(R.id.addTaskB);
         sortB = findViewById(R.id.sortB);
         modeB = findViewById(R.id.modeB);
 
@@ -84,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setCurrentItem(selectedPos, true);
         tabLayout.selectTab(tabLayout.getTabAt(selectedPos));
+
+        addTaskB.setOnClickListener(v -> {
+            TaskDialog taskDialog = new TaskDialog(viewPager.getCurrentItem(), 1, null);
+            taskDialog.show(getSupportFragmentManager(), taskDialog.getTag());
+        });
 
         sortB.setOnClickListener(v -> {
             if (viewPager.getCurrentItem() == 0) {
@@ -147,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         BottomDialog bottomSheet = new BottomDialog(2, sortType, sortOrder);
         bottomSheet.show(getSupportFragmentManager(), "MyBottomSheet");
     }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {

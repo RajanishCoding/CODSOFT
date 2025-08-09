@@ -19,6 +19,7 @@ public class Task {
     private String title;
     private String detail;
     private String dueDate;
+    private String priority;
     private Long dateInMillis;
     private Long creationDateinMillis;
 
@@ -71,6 +72,14 @@ public class Task {
 
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
     public void setDateInMillis(Long dateInMillis) {

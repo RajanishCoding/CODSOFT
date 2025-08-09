@@ -64,6 +64,7 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
 //        TextView statusT;
         TextView leftDaysT;
         TextView dueDateT;
+        TextView priorityT;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -74,6 +75,7 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
 //            statusT = itemView.findViewById(R.id.statusT);
             leftDaysT = itemView.findViewById(R.id.leftDaysT);
             dueDateT = itemView.findViewById(R.id.dueDateT);
+            priorityT = itemView.findViewById(R.id.priorityT);
         }
     }
 
@@ -108,13 +110,15 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
         else holder.starB.setImageResource(R.drawable.round_star_outline);
 
+        holder.priorityT.setText("Priority: " + task.getPriority());
+
         holder.leftDaysT.setText("Completed: " + getFullDateFromMillis(task.getCompletedDateinMillis()));
 
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
 
-            TaskDialog taskDialog = new TaskDialog(2, getItem(pos), pos);
+            TaskDialog taskDialog = new TaskDialog(-1, 2, getItem(pos));
             taskDialog.show(fragmentManager, taskDialog.getTag());
         });
 

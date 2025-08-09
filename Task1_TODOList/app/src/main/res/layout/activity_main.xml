@@ -48,13 +48,21 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@color/lineRev"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/toolbar"
         app:tabGravity="center"
         app:tabMode="scrollable"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/border">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -80,6 +88,17 @@
         app:layout_constraintTop_toBottomOf="@id/tabLayout"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-
+    <ImageButton
+        android:id="@+id/addTaskB"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/gradient_button"
+        android:contentDescription="Add Task"
+        android:src="@drawable/round_add"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

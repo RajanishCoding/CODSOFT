@@ -18,6 +18,7 @@
     <color name="starTint">#C0C0C0</color>
 
     <color name="line">#000000</color>
+    <color name="lineRev">#000000</color>
 
 
     <color name="overlayButton">#1AFFFFFF</color>

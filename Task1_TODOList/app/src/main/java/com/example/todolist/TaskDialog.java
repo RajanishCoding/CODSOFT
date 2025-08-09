@@ -6,15 +6,19 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,16 +46,20 @@ public class TaskDialog extends DialogFragment {
 
     private RoomDao roomDao;
 
+    private int fragmentPos;
     private int mode;
     private Task task;
-    private int taskIndex;
+//    private int taskIndex;
 
     private TextView title;
     private EditText titleE;
     private EditText detE;
     private EditText dateE;
+    private AutoCompleteTextView priorityDropdown;
     private Button cancelB;
     private Button doneB;
+    private LinearLayout btnLayout;
+
     private ImageButton infoB;
     private CheckBox compB;
     private ImageButton starB;
@@ -62,11 +70,12 @@ public class TaskDialog extends DialogFragment {
 
     public long selectedTimeMillis;
     public long creationTimeMillis;
+    public String priority = "None";
 
-    public TaskDialog(int mode, Task task, int taskIndex) {
+    public TaskDialog(int fragmentPos, int mode, Task task) {
+        this.fragmentPos = fragmentPos;
         this.mode = mode;
         this.task = task;
-        this.taskIndex = taskIndex;
     }
 
     @NonNull
@@ -93,9 +102,11 @@ public class TaskDialog extends DialogFragment {
         titleE = view.findViewById(R.id.titleE);
         detE = view.findViewById(R.id.detE);
         dateE = view.findViewById(R.id.datePickerE);
+        priorityDropdown = view.findViewById(R.id.priorityDropdown);
 
         cancelB = view.findViewById(R.id.decline_button);
         doneB = view.findViewById(R.id.accept_button);
+        btnLayout = view.findViewById(R.id.buttonsLayout);
 
         infoB = view.findViewById(R.id.infoB);
         compB = view.findViewById(R.id.completeB);
@@ -111,6 +122,8 @@ public class TaskDialog extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        startAnimation(view);
+
         if (mode == 2) {
             title.setText("Edit Task");
 
@@ -126,7 +139,28 @@ public class TaskDialog extends DialogFragment {
         }
         else {
             delB.setVisibility(View.GONE);
+            infoB.setVisibility(View.GONE);
+
+            if (fragmentPos == 0) {
+                starB.setImageResource(R.drawable.round_star);
+                isImportant = true;
+            }
+            else if (fragmentPos == 2) {
+                compB.setChecked(true);
+                isCompleted = true;
+            }
         }
+
+        String[] priorities = {"Urgent", "High", "Medium", "Low", "None"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_layout, priorities);
+        priorityDropdown.setAdapter(adapter);
+
+        priorityDropdown.setOnItemClickListener((parent, view1, position, id) -> {
+            TextView textView = (TextView) view1;
+            priority = textView.getText().toString();
+        });
+
 
         Calendar calendar = Calendar.getInstance();
         int yr = calendar.get(Calendar.YEAR);
@@ -141,7 +175,7 @@ public class TaskDialog extends DialogFragment {
 
                         selectedTimeMillis = selectedCal.getTimeInMillis();
 
-                        // Format to: "Mon, 22 Jul, 2025"
+                        // Format: "Mon, 22 Jul, 2025"
                         String formattedDate = new SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault())
                                 .format(new Date(selectedTimeMillis));
                         dateE.setText(formattedDate);
@@ -151,72 +185,11 @@ public class TaskDialog extends DialogFragment {
         });
 
         infoB.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            View viewD = getLayoutInflater().inflate(R.layout.info_dialog, null);
-            builder.setView(viewD);
-
-            TextView title = viewD.findViewById(R.id.title);
-            TextView det = viewD.findViewById(R.id.detail);
-            TextView create = viewD.findViewById(R.id.create);
-            TextView due = viewD.findViewById(R.id.due);
-            TextView left = viewD.findViewById(R.id.left);
-            TextView comp = viewD.findViewById(R.id.complete);
-            TextView star = viewD.findViewById(R.id.starred);
-
-            AlertDialog dialog = builder.create();
-            dialog.setOnShowListener(dialogInterface -> {
-                Window window = dialog.getWindow();
-                if (window != null) {
-                    window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                }
-            });
-            dialog.show();
-
-            title.setText(task.getTitle());
-
-            if (task.getDetail().isEmpty()) det.setText("No Details");
-
-            else det.setText(task.getDetail());
-
-            create.setText(getFullDateTimeFromMillis(task.getCreationDateinMillis()));
-
-            due.setText(getFullDateFromMillis(task.getDateInMillis()));
-
-            long days = getDaysLeft(task.getDateInMillis());
-            if (days == 0) left.setText("Active • Today");
-            else if (days < 0) left.setText("Overdue • " + -days + " days ago");
-            else left.setText(days + " days left");
-
-            if (task.getCompletedDateinMillis() == null) comp.setText("Not Completed yet");
-            else comp.setText(getFullDateTimeFromMillis(task.getCompletedDateinMillis()));
-
-            if (task.getStarredDateinMillis() == null) star.setText("Not Marked as Important");
-            else star.setText(getFullDateTimeFromMillis(task.getStarredDateinMillis()));
+            onInfoClicked();
         });
 
         delB.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            View viewD = getLayoutInflater().inflate(R.layout.del_alert_dialog, null);
-            builder.setView(viewD);
-
-            Button cancel = viewD.findViewById(R.id.cancel_button);
-            Button delete = viewD.findViewById(R.id.del_button);
-
-            AlertDialog dialog = builder.create();
-            dialog.setOnShowListener(dialogInterface -> {
-                Window window = dialog.getWindow();
-                if (window != null) {
-                    window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                }
-            });
-            dialog.show();
-
-            cancel.setOnClickListener(v1 -> dialog.dismiss());
-            delete.setOnClickListener(v1 -> {
-                new Thread(() -> roomDao.delete(task)).start();
-                dialog.dismiss();
-                dismiss();
-            });
+            onDeleteCLicked();
         });
 
         starB.setOnClickListener(v -> {
@@ -243,8 +216,13 @@ public class TaskDialog extends DialogFragment {
                     creationTimeMillis = getCreationDateinMillis();
                     Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
                             dateE.getText().toString().trim(), selectedTimeMillis, creationTimeMillis);
-                    task.setImportant(isImportant);
-                    task.setCompleted(isCompleted);
+
+                    task.setPriority(priority);
+                    if (isImportant) task.setImportants(true);
+                    else task.setImportant(false);
+                    if (isCompleted) task.setCompletion(true);
+                    else task.setCompleted(false);
+
                     taskListener.onTaskAdded(task);
                 }
                 else {
@@ -284,7 +262,121 @@ public class TaskDialog extends DialogFragment {
             );
         }
     }
-    
+
+
+    private void onInfoClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View viewD = getLayoutInflater().inflate(R.layout.info_dialog, null);
+        builder.setView(viewD);
+
+        TextView title = viewD.findViewById(R.id.title);
+        TextView det = viewD.findViewById(R.id.detail);
+        TextView create = viewD.findViewById(R.id.create);
+        TextView due = viewD.findViewById(R.id.due);
+        TextView left = viewD.findViewById(R.id.left);
+        TextView comp = viewD.findViewById(R.id.complete);
+        TextView star = viewD.findViewById(R.id.starred);
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        });
+        dialog.show();
+
+        title.setText(task.getTitle());
+
+        if (task.getDetail().isEmpty()) det.setText("No Details");
+
+        else det.setText(task.getDetail());
+
+        create.setText(getFullDateTimeFromMillis(task.getCreationDateinMillis()));
+
+        due.setText(getFullDateFromMillis(task.getDateInMillis()));
+
+        long days = getDaysLeft(task.getDateInMillis());
+        if (days == 0) left.setText("Active • Today");
+        else if (days < 0) left.setText("Overdue • " + -days + " days ago");
+        else left.setText(days + " days left");
+
+        if (task.getCompletedDateinMillis() == null) comp.setText("Not Completed yet");
+        else comp.setText(getFullDateTimeFromMillis(task.getCompletedDateinMillis()));
+
+        if (task.getStarredDateinMillis() == null) star.setText("Not Marked as Important");
+        else star.setText(getFullDateTimeFromMillis(task.getStarredDateinMillis()));
+    }
+
+    private void onDeleteCLicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View viewD = getLayoutInflater().inflate(R.layout.del_alert_dialog, null);
+        builder.setView(viewD);
+
+        Button cancel = viewD.findViewById(R.id.cancel_button);
+        Button delete = viewD.findViewById(R.id.del_button);
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        });
+        dialog.show();
+
+        cancel.setOnClickListener(v1 -> dialog.dismiss());
+        delete.setOnClickListener(v1 -> {
+            new Thread(() -> roomDao.delete(task)).start();
+            dialog.dismiss();
+            dismiss();
+        });
+    }
+
+    private void startAnimation(View root) {
+        root.setScaleX(0.5f);
+        root.setScaleY(0.5f);
+        root.setTranslationY(50);
+        root.setAlpha(0f);
+        root.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationY(0)
+                .alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new DecelerateInterpolator())
+                .start();
+
+        titleE.setAlpha(0f);
+        titleE.animate()
+                .alpha(1f)
+                .setStartDelay(150)
+                .setDuration(300)
+                .start();
+
+        detE.setAlpha(0f);
+        detE.animate()
+                .alpha(1f)
+                .setStartDelay(250)
+                .setDuration(300)
+                .start();
+
+        dateE.setAlpha(0f);
+        dateE.animate()
+                .alpha(1f)
+                .setStartDelay(350)
+                .setDuration(300)
+                .start();
+
+        btnLayout.setAlpha(0f);
+        btnLayout.animate()
+                .alpha(1f)
+                .setStartDelay(450)
+                .setDuration(300)
+                .start();
+    }
+
+
     private boolean isTaskValid() {
         if (titleE.getText().toString().trim().isEmpty()) {
             Toast.makeText(requireContext(), "Please write the Title!", Toast.LENGTH_SHORT).show();
@@ -301,23 +393,6 @@ public class TaskDialog extends DialogFragment {
     private long getCreationDateinMillis() {
         Calendar calendar = Calendar.getInstance();
         return calendar.getTimeInMillis();
-    }
-
-
-    public String getFullDateTimeFromMillis(Long millis) {
-        if (millis == null) return null;
-
-        Date date = new Date(millis);
-        SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy\nhh:mm a", Locale.getDefault());
-        return str.format(date);
-    }
-
-    public String getFullDateFromMillis(Long millis) {
-        if (millis == null) return null;
-
-        Date date = new Date(millis);
-        SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy", Locale.getDefault());
-        return str.format(date);
     }
 
     private long getDaysLeft(long millis) {
@@ -337,6 +412,22 @@ public class TaskDialog extends DialogFragment {
         long diffMillis = taskDay.getTimeInMillis() - today.getTimeInMillis();
 
         return TimeUnit.MILLISECONDS.toDays(diffMillis);
+    }
+
+    public String getFullDateTimeFromMillis(Long millis) {
+        if (millis == null) return null;
+
+        Date date = new Date(millis);
+        SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy\nhh:mm a", Locale.getDefault());
+        return str.format(date);
+    }
+
+    public String getFullDateFromMillis(Long millis) {
+        if (millis == null) return null;
+
+        Date date = new Date(millis);
+        SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy", Locale.getDefault());
+        return str.format(date);
     }
 
 

@@ -52,6 +52,8 @@ public class TaskFragment extends Fragment {
     private int sortType;
     private boolean sortOrder;
 
+    private boolean isScroll;
+
     private LiveData<List<Task>> liveData;
 
 
@@ -112,25 +114,17 @@ public class TaskFragment extends Fragment {
 
             liveData.observe(getViewLifecycleOwner(), tasks -> {
                 Log.d("ddjd34jd", "onViewCreated: " + sortType + sortOrder);
-                adapter.submitList(tasks);
+                adapter.submitList(tasks, () -> {
+                    if (isScroll) {
+                        recyclerView.post(() -> recyclerView.smoothScrollToPosition(0));
+                        isScroll = false;
+                    }
+                });
+
                 setNotFoundView(tasks.isEmpty());
             });
         });
 
-
-        addTaskB.setOnClickListener(v -> {
-            TaskDialog taskDialog = new TaskDialog(1, null, -1);
-            taskDialog.show(getChildFragmentManager(), taskDialog.getTag());
-        });
-
-        TaskDialog.addTaskListener(task -> {
-            Log.d("added", "onTaskAdded: " + "added");
-            task.setPos(adapter.getItemCount());
-            new Thread(() -> {
-                roomDao.insert(task);
-                requireActivity().runOnUiThread(() -> recyclerView.smoothScrollToPosition(0));
-            }).start();
-        });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
@@ -180,4 +174,35 @@ public class TaskFragment extends Fragment {
         if (isEmpty) notfoundT.setVisibility(View.VISIBLE);
         else notfoundT.setVisibility(View.GONE);
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.d("hellwosj", "onResume1: ");
+
+        TaskDialog.addTaskListener(task -> {
+            Log.d("added", "onTaskAdded: " + "added");
+            new Thread(() -> {
+                int totalCount = roomDao.getTotalTaskCount();
+                task.setPos(totalCount);
+
+                roomDao.insert(task);
+
+                requireActivity().runOnUiThread(() -> {
+                    if (!task.isCompleted())
+                        isScroll = true;
+                });
+            }).start();
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("hellwosj", "onPause1: ");
+        TaskDialog.addTaskListener(null);
+    }
 }
+
