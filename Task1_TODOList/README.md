@@ -24,14 +24,14 @@ The ToDo List App helps you manage your tasks in a simple and organized way. You
 ---
 
 ## Extra Features
-- Gradient background that matches status bar & navigation bar.  
-- CardView margin adjustments without shrinking size.  
-- Rounded icons/images for a modern look.  
-- Shape background tinting support.  
+- Gradient background that blends with status bar & navigation bar.  
+- Priority colors automatically assigned based on selected priority.  
+- Due date color coding for quick visual deadline tracking.  
+- Rounded icons/images for a modern look. 
 
 ---
 
 ## Future Scope
 - Task search & filter.  
 - Due date reminders with notifications.  
-- Optional cloud sync for multiple devices.  
+- Cloud sync for multiple devices.  
