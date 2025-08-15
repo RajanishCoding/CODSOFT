@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -34,6 +35,8 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
     Context context;
     FragmentManager fragmentManager;
     List<Task> taskList;
+
+    String[] priorities = {"None", "Low", "Normal", "High", "Urgent"};
 
     private RoomDao roomDao;
 
@@ -110,7 +113,24 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         if (task.isImportant()) holder.starB.setImageResource(R.drawable.round_star);
         else holder.starB.setImageResource(R.drawable.round_star_outline);
 
-        holder.priorityT.setText("Priority: " + task.getPriority());
+        holder.priorityT.setText("Priority: " + priorities[task.getPriority()]);
+        switch (task.getPriority()) {
+            case 0:
+                holder.priorityT.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.overlayItemDetailsPriority0));
+                break;
+            case 1:
+                holder.priorityT.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.overlayItemDetailsPriority1));
+                break;
+            case 2:
+                holder.priorityT.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.overlayItemDetailsPriority2));
+                break;
+            case 3:
+                holder.priorityT.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.overlayItemDetailsPriority3));
+                break;
+            case 4:
+                holder.priorityT.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.overlayItemDetailsPriority4));
+                break;
+        }
 
         holder.leftDaysT.setText("Completed: " + getFullDateFromMillis(task.getCompletedDateinMillis()));
 

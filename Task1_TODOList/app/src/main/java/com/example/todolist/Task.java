@@ -19,7 +19,7 @@ public class Task {
     private String title;
     private String detail;
     private String dueDate;
-    private String priority;
+    private int priority;
     private Long dateInMillis;
     private Long creationDateinMillis;
 
@@ -31,10 +31,11 @@ public class Task {
     private boolean isCompleted;
     private boolean isImportant;
 
-    public Task(String title, String detail, String dueDate, Long dateInMillis, Long creationDateinMillis) {
+    public Task(String title, String detail, String dueDate, int priority, Long dateInMillis, Long creationDateinMillis) {
         this.title = title;
         this.detail = detail;
         this.dueDate = dueDate;
+        this.priority = priority;
         this.dateInMillis = dateInMillis;
         this.creationDateinMillis = creationDateinMillis;
         id = title + dueDate;
@@ -74,11 +75,11 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -177,6 +178,7 @@ public class Task {
         return title.equals(task.title) &&
                 detail.equals(task.detail) &&
                 dateInMillis.equals(task.dateInMillis) &&
+                priority == task.priority &&
                 isCompleted == task.isCompleted &&
                 isImportant == task.isImportant;
     }

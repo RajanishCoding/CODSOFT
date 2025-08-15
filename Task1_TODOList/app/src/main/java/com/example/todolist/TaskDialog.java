@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,9 +54,9 @@ public class TaskDialog extends DialogFragment {
 //    private int taskIndex;
 
     private TextView title;
-    private EditText titleE;
-    private EditText detE;
-    private EditText dateE;
+    private TextInputEditText titleE;
+    private TextInputEditText detE;
+    private TextInputEditText dateE;
     private AutoCompleteTextView priorityDropdown;
     private Button cancelB;
     private Button doneB;
@@ -70,7 +72,7 @@ public class TaskDialog extends DialogFragment {
 
     public long selectedTimeMillis;
     public long creationTimeMillis;
-    public String priority = "None";
+    public int priority = 0;
 
     public TaskDialog(int fragmentPos, int mode, Task task) {
         this.fragmentPos = fragmentPos;
@@ -124,12 +126,19 @@ public class TaskDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         startAnimation(view);
 
+        String[] priorities = {"None", "Low", "Normal", "High", "Urgent"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_layout, priorities);
+        priorityDropdown.setAdapter(adapter);
+
         if (mode == 2) {
             title.setText("Edit Task");
 
             titleE.setText(task.getTitle());
             detE.setText(task.getDetail());
             dateE.setText(task.getDueDate());
+
+            priority = task.getPriority();
+            priorityDropdown.setText(priorities[priority], false);
 
             isCompleted = task.isCompleted();
             isImportant = task.isImportant();
@@ -151,14 +160,10 @@ public class TaskDialog extends DialogFragment {
             }
         }
 
-        String[] priorities = {"Urgent", "High", "Medium", "Low", "None"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_layout, priorities);
-        priorityDropdown.setAdapter(adapter);
 
         priorityDropdown.setOnItemClickListener((parent, view1, position, id) -> {
-            TextView textView = (TextView) view1;
-            priority = textView.getText().toString();
+//            TextView textView = (TextView) view1;
+            priority = position;
         });
 
 
@@ -215,9 +220,8 @@ public class TaskDialog extends DialogFragment {
                 if (mode == 1) {
                     creationTimeMillis = getCreationDateinMillis();
                     Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
-                            dateE.getText().toString().trim(), selectedTimeMillis, creationTimeMillis);
+                            dateE.getText().toString().trim(), priority, selectedTimeMillis, creationTimeMillis);
 
-                    task.setPriority(priority);
                     if (isImportant) task.setImportants(true);
                     else task.setImportant(false);
                     if (isCompleted) task.setCompletion(true);
@@ -227,7 +231,8 @@ public class TaskDialog extends DialogFragment {
                 }
                 else {
                     Task newTask = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
-                            dateE.getText().toString().trim(), selectedTimeMillis, task.getCreationDateinMillis());
+                            dateE.getText().toString().trim(), priority, selectedTimeMillis, task.getCreationDateinMillis());
+                    Log.d("priortity", "onViewCreated: " + priority);
                     newTask.setId(task.getId());
                     newTask.setPos(task.getPos());
 
@@ -368,10 +373,17 @@ public class TaskDialog extends DialogFragment {
                 .setDuration(300)
                 .start();
 
+        priorityDropdown.setAlpha(0f);
+        priorityDropdown.animate()
+                .alpha(1f)
+                .setStartDelay(450)
+                .setDuration(300)
+                .start();
+
         btnLayout.setAlpha(0f);
         btnLayout.animate()
                 .alpha(1f)
-                .setStartDelay(450)
+                .setStartDelay(550)
                 .setDuration(300)
                 .start();
     }

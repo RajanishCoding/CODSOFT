@@ -27,7 +27,15 @@
     <color name="sidebar">#E6101010</color>
 
 
-    <color name="overlayItemDetails">#30283E</color>
+    <color name="overlayItemDetails1">#81515053</color> <!-- overdue -->
+    <color name="overlayItemDetails2">#3E3E28</color> <!-- active -->
+    <color name="overlayItemDetails3">#30283E</color> <!-- days left -->
+
+    <color name="overlayItemDetailsPriority0">#30283E</color> <!-- none -->
+    <color name="overlayItemDetailsPriority1">#663B9934</color> <!-- low -->
+    <color name="overlayItemDetailsPriority2">#6690862B</color> <!-- mid -->
+    <color name="overlayItemDetailsPriority3">#73A05421</color> <!-- high -->
+    <color name="overlayItemDetailsPriority4">#73AE1E1E</color> <!-- urgent -->
 
     <color name="overlayListSelector">#597F8794</color>
     <color name="overlayList">#1AC8C8C8</color>

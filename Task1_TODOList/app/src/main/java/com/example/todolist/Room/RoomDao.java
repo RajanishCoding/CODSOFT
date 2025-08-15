@@ -53,6 +53,12 @@ public interface RoomDao {
     @Query("select * from task_table where isCompleted = 0 order by dateInMillis desc")
     LiveData<List<Task>> getTasksByDueDsc();
 
+    @Query("select * from task_table where isCompleted = 0 order by priority asc")
+    LiveData<List<Task>> getTasksByPriorityAsc();
+
+    @Query("select * from task_table where isCompleted = 0 order by priority desc")
+    LiveData<List<Task>> getTasksByPriorityDsc();
+
 
     @Query("select * from task_table where isCompleted = 1 order by pos desc")
     LiveData<List<Task>> getCompletedTasksAsc();
@@ -72,6 +78,12 @@ public interface RoomDao {
     @Query("select * from task_table where isCompleted = 1 order by completedDateinMillis desc")
     LiveData<List<Task>> getCompletedTasksByCompDsc();
 
+    @Query("select * from task_table where isCompleted = 1 order by priority asc")
+    LiveData<List<Task>> getCompletedTasksByPriorityAsc();
+
+    @Query("select * from task_table where isCompleted = 1 order by priority desc")
+    LiveData<List<Task>> getCompletedTasksByPriorityDsc();
+
 
     @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by pos desc")
     LiveData<List<Task>> getImportantTasksAsc();
@@ -90,4 +102,10 @@ public interface RoomDao {
 
     @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by starredDateinMillis desc")
     LiveData<List<Task>> getImportantTasksByStarDsc();
+
+    @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by priority asc")
+    LiveData<List<Task>> getImportantTasksByPriorityAsc();
+
+    @Query("select * from task_table where isImportant = 1 and isCompleted = 0 order by priority desc")
+    LiveData<List<Task>> getImportantTasksByPriorityDsc();
 }

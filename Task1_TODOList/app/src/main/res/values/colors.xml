@@ -30,9 +30,16 @@
 
     <color name="bottomBarButtonTint">#000000</color>
 
-    <color name="overlayItemDetails">#C5C8DF</color>
-    <color name="overlayItemDetails_2">#DFCCC5</color>
-    <color name="overlayItemDetails_3">#C5DFCC</color>
+    <color name="overlayItemDetails1">#9CC2C3C8</color> <!-- overdue -->
+    <color name="overlayItemDetails2">#DFD6C5</color> <!-- active -->
+    <color name="overlayItemDetails3">#C5C8DF</color> <!-- days left -->
+
+    <color name="overlayItemDetailsPriority0">#C5C8DF</color> <!-- none -->
+    <color name="overlayItemDetailsPriority1">#4077E15B</color> <!-- low -->
+    <color name="overlayItemDetailsPriority2">#4DD1DA57</color> <!-- mid -->
+    <color name="overlayItemDetailsPriority3">#59FF9437</color> <!-- high -->
+    <color name="overlayItemDetailsPriority4">#59FF2222</color> <!-- urgent -->
+
 
     <color name="overlayListSelector">#59697379</color>
     <color name="overlayList">#1A373737</color>
