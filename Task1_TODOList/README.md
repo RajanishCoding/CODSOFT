@@ -17,9 +17,9 @@ The ToDo List App helps you manage your tasks in a simple and organized way. You
 ## Technical Features
 - **Language**: Java  
 - **UI**: XML layouts with ConstraintLayout, RecyclerView, etc.  
-- **Storage**: Persistent local storage (Room Database and SharedPreferences)  
-- **Performance**: Background threading via Thread to avoid UI blocking
-- **Theme**: Dark mode only with adjusted colors for readability  
+- **Storage**: Persistent local storage (Room Database and SharedPreferences).
+- **Performance**: Background threading via Thread to avoid UI blocking.
+- **Theme**: Supports both light and dark modes with adjusted colors for readability.
 
 ---
 
@@ -27,7 +27,7 @@ The ToDo List App helps you manage your tasks in a simple and organized way. You
 - Gradient background that blends with status bar & navigation bar.  
 - Priority colors automatically assigned based on selected priority.  
 - Due date color coding for quick visual deadline tracking.  
-- Rounded icons/images for a modern look. 
+- Rounded icons/shape for a modern look. 
 
 ---
 
