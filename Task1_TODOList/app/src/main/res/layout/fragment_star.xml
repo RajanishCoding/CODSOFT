@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="No tasks available\nAdd a new task to get started"
+        android:text="No important tasks\nMark tasks as important to see them here"
         android:textSize="18sp"
         android:visibility="gone"/>
 

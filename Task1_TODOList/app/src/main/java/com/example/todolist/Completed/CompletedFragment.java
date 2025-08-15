@@ -75,8 +75,8 @@ public class CompletedFragment extends Fragment {
         SortViewModel sortViewModel = new ViewModelProvider(requireActivity()).get(SortViewModel.class);
 
 
-        sortType = prefs.getInt("sortType", 0);
-        sortOrder = prefs.getBoolean("sortOrder", true);
+        sortType = prefs.getInt("sortType_comp", 0);
+        sortOrder = prefs.getBoolean("sortOrder_comp", true);
 
         sortViewModel.setSortConfig(sortType, sortOrder);
 
@@ -88,6 +88,7 @@ public class CompletedFragment extends Fragment {
         sortViewModel.getSortConfig().observe(getViewLifecycleOwner(), config -> {
             sortType = config.first;
             sortOrder = config.second;
+
 
             if (sortViewModel.getPos() != null && sortViewModel.getPos() != 2) return;
 
@@ -101,7 +102,8 @@ public class CompletedFragment extends Fragment {
 
             if (sortType == 0) liveData = sortOrder ? roomDao.getCompletedTasksAsc() : roomDao.getCompletedTasksDsc();
             else if (sortType == 1) liveData = sortOrder ? roomDao.getCompletedTasksByCompAsc() : roomDao.getCompletedTasksByCompDsc();
-            else liveData = sortOrder ? roomDao.getCompletedTasksByCreateAsc() : roomDao.getCompletedTasksByCreateDsc();
+            else if (sortType == 2) liveData = sortOrder ? roomDao.getCompletedTasksByCreateAsc() : roomDao.getCompletedTasksByCreateDsc();
+            else liveData = sortOrder ? roomDao.getCompletedTasksByPriorityAsc() : roomDao.getCompletedTasksByPriorityDsc();
 
             liveData.observe(getViewLifecycleOwner(), tasks -> {
                 adapter.submitList(tasks, () -> {

@@ -43,10 +43,6 @@ public class TaskFragment extends Fragment {
     private RecyclerView recyclerView;
     private TaskAdapter adapter;
 
-    private ImageButton addTaskB;
-    private CheckBox markCompletedB;
-    private ImageButton markStarB;
-
     private TextView notfoundT;
 
     private int sortType;
@@ -69,7 +65,6 @@ public class TaskFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        addTaskB = view.findViewById(R.id.addTaskB);
         notfoundT = view.findViewById(R.id.notFoundT);
 
         return view;
@@ -84,8 +79,8 @@ public class TaskFragment extends Fragment {
         SortViewModel sortViewModel = new ViewModelProvider(requireActivity()).get(SortViewModel.class);
 
 
-        sortType = prefs.getInt("sortType", 0);
-        sortOrder = prefs.getBoolean("sortOrder", true);
+        sortType = prefs.getInt("sortType_task", 0);
+        sortOrder = prefs.getBoolean("sortOrder_task", true);
 
         sortViewModel.setSortConfig(sortType, sortOrder);
         adapter = new TaskAdapter(requireContext(), getChildFragmentManager());
@@ -110,7 +105,8 @@ public class TaskFragment extends Fragment {
 
             if (sortType == 0) liveData = sortOrder ? roomDao.getTasksAsc() : roomDao.getTasksDsc();
             else if (sortType == 1) liveData = sortOrder ? roomDao.getTasksByCreateAsc() : roomDao.getTasksByCreateDsc();
-            else liveData = sortOrder ? roomDao.getTasksByDueAsc() : roomDao.getTasksByDueDsc();
+            else if (sortType == 2) liveData = sortOrder ? roomDao.getTasksByDueAsc() : roomDao.getTasksByDueDsc();
+            else liveData = sortOrder ? roomDao.getTasksByPriorityAsc() : roomDao.getTasksByPriorityDsc();
 
             liveData.observe(getViewLifecycleOwner(), tasks -> {
                 Log.d("ddjd34jd", "onViewCreated: " + sortType + sortOrder);

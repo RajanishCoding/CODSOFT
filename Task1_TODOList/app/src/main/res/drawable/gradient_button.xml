@@ -6,9 +6,9 @@
     <corners android:radius="100dp" />
 
     <gradient
-        android:startColor="@color/toolbarG"
-        android:endColor="@color/toolbar"
-        android:angle="315"
+        android:startColor="@color/buttonG1"
+        android:endColor="@color/buttonG2"
+        android:angle="135"
         android:type="linear"/>
 
 </shape>

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         selectedPos = savedInstanceState != null ? savedInstanceState.getInt("itemPos", 1) : 1;
+        Log.d("darkdkd", "onSaveInstanceState11: " + selectedPos);
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.toolbarG));
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         modeB = findViewById(R.id.modeB);
 
 
-        modeB.setImageResource(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO ? R.drawable.round_light_mode : R.drawable.round_dark_mode);
+        modeB.setImageResource(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO ? R.drawable.round_dark_mode : R.drawable.round_light_mode);
 
         viewPageAdapter = new ViewPageAdapter(this);
         viewPager.setAdapter(viewPageAdapter);
@@ -157,8 +158,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt("itemPos", viewPager.getCurrentItem());
+        Log.d("darkdkd", "onSaveInstanceState: " + viewPager.getCurrentItem());
     }
 }

@@ -99,6 +99,18 @@
                 android:textAlignment="textStart"
                 android:layout_weight="1"/>
 
+            <Button
+                android:id="@+id/order4B"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/transparent"
+                android:paddingHorizontal="28dp"
+                android:text="Priority"
+                android:textSize="16sp"
+                android:textColor="@color/text"
+                android:textAlignment="textStart"
+                android:layout_weight="1"/>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

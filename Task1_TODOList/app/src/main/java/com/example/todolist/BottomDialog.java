@@ -35,6 +35,7 @@ public class BottomDialog extends BottomSheetDialogFragment {
     private Button order1B;
     private Button order2B;
     private Button order3B;
+    private Button order4B;
 
     private Drawable asc;
     private Drawable desc;
@@ -74,6 +75,7 @@ public class BottomDialog extends BottomSheetDialogFragment {
         order1B = view.findViewById(R.id.order1B);
         order2B = view.findViewById(R.id.order2B);
         order3B = view.findViewById(R.id.order3B);
+        order4B = view.findViewById(R.id.order4B);
 
         return view;
     }
@@ -108,7 +110,8 @@ public class BottomDialog extends BottomSheetDialogFragment {
 
         if (pos == 0) order1B.setCompoundDrawablesWithIntrinsicBounds(null, null, check, null);
         else if (pos == 1) order2B.setCompoundDrawablesWithIntrinsicBounds(null, null, check, null);
-        else order3B.setCompoundDrawablesWithIntrinsicBounds(null, null, check, null);
+        else if (pos == 2) order3B.setCompoundDrawablesWithIntrinsicBounds(null, null, check, null);
+        else order4B.setCompoundDrawablesWithIntrinsicBounds(null, null, check, null);
 
         if (isAsc) {
             orderB.setText("ASC");
@@ -145,6 +148,11 @@ public class BottomDialog extends BottomSheetDialogFragment {
 
         order3B.setOnClickListener(v -> {
             sortViewModel.setSortConfig(2, isAsc);
+            dismiss();
+        });
+
+        order4B.setOnClickListener(v -> {
+            sortViewModel.setSortConfig(3, isAsc);
             dismiss();
         });
     }

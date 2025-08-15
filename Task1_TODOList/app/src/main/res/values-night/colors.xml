@@ -6,6 +6,9 @@
     <color name="toolbarG">#030520</color>
     <color name="toolbar">#040627</color>
 
+    <color name="buttonG1">#0B203E</color>
+    <color name="buttonG2">#0B116B</color>
+
     <color name="buttons">#C3ADFF</color>
     
     <color name="item">#B9B9B9</color>
@@ -28,7 +31,7 @@
 
 
     <color name="overlayItemDetails1">#81515053</color> <!-- overdue -->
-    <color name="overlayItemDetails2">#3E3E28</color> <!-- active -->
+    <color name="overlayItemDetails2">#5D5842</color> <!-- active -->
     <color name="overlayItemDetails3">#30283E</color> <!-- days left -->
 
     <color name="overlayItemDetailsPriority0">#30283E</color> <!-- none -->

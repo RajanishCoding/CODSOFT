@@ -74,14 +74,13 @@ public class StarFragment extends Fragment {
         SortViewModel sortViewModel = new ViewModelProvider(requireActivity()).get(SortViewModel.class);
 
 
-        sortType = prefs.getInt("sortType", 0);
-        sortOrder = prefs.getBoolean("sortOrder", true);
+        sortType = prefs.getInt("sortType_star", 0);
+        sortOrder = prefs.getBoolean("sortOrder_star", true);
 
         sortViewModel.setSortConfig(sortType, sortOrder);
 
         adapter = new StarTaskAdapter(requireContext(), getChildFragmentManager());
         recyclerView.setAdapter(adapter);
-
 
         sortViewModel.getSortConfig().observe(getViewLifecycleOwner(), config -> {
             sortType = config.first;
@@ -99,7 +98,8 @@ public class StarFragment extends Fragment {
 
             if (sortType == 0) liveData = sortOrder ? roomDao.getImportantTasksAsc() : roomDao.getImportantTasksDsc();
             else if (sortType == 1) liveData = sortOrder ? roomDao.getImportantTasksByStarAsc() : roomDao.getImportantTasksByStarDsc();
-            else liveData = sortOrder ? roomDao.getImportantTasksByDueAsc() : roomDao.getImportantTasksByDueDsc();
+            else if (sortType == 2) liveData = sortOrder ? roomDao.getImportantTasksByDueAsc() : roomDao.getImportantTasksByDueDsc();
+            else liveData = sortOrder ? roomDao.getImportantTasksByPriorityAsc() : roomDao.getImportantTasksByPriorityDsc();
 
             liveData.observe(getViewLifecycleOwner(), tasks -> {
                 adapter.submitList(tasks, () -> {
