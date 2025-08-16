@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.todolist.Task;
 
-@Database(entities = {Task.class}, version = 1)
+@Database(entities = {Task.class}, version = 2)
 public abstract class RoomDB extends RoomDatabase {
 
     private static volatile RoomDB INSTANCE;
@@ -22,7 +22,7 @@ public abstract class RoomDB extends RoomDatabase {
                             context.getApplicationContext(),
                             RoomDB.class,
                             "task_database"
-                    ).build();
+                    ).fallbackToDestructiveMigration().build();
                 }
             }
         }
