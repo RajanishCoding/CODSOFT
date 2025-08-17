@@ -19,16 +19,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true"
-            app:cardBackgroundColor="#4012007B"
+            app:cardBackgroundColor="#5912007B"
             android:elevation="0dp"
             android:outlineSpotShadowColor="#00000000"
             android:outlineAmbientShadowColor="#00000000"
-            app:cardCornerRadius="50dp">
+            app:cardCornerRadius="40dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00FFFFFF"
                 android:orientation="vertical">
 
                 <TextView
@@ -36,8 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_marginTop="20dp"
-                    android:paddingHorizontal="30dp"
-                    android:paddingVertical="30dp"
+                    android:paddingHorizontal="25dp"
+                    android:paddingVertical="20dp"
                     android:gravity="center"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="15sp"
@@ -57,7 +56,6 @@
                     android:textSize="20sp"
                     android:fontFamily="monospace"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
                     android:textAlignment="center"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -69,27 +67,31 @@
             android:orientation="horizontal"
             android:paddingHorizontal="20dp">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/favorB"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/shape_button"
                 android:text="Favorite"
-                android:drawableStart="@drawable/round_favorite"
+                android:textSize="15sp"
+                android:textColor="@color/text"
+                android:drawableLeft="@drawable/round_favorite"
                 android:paddingHorizontal="25dp"
                 android:drawableTint="#FFE6E6"
                 />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/shareB"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/shape_button"
                 android:text="Share"
-                android:drawableStart="@drawable/round_favorite"
+                android:textSize="15sp"
+                android:textColor="@color/text"
+                android:drawableLeft="@drawable/round_share"
                 android:paddingHorizontal="25dp"
                 android:drawableTint="#FFE6E6"
                 />

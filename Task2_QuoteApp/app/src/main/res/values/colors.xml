@@ -8,9 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="text">@color/white</color>
+    <color name="textRev">@color/black</color>
+
     <color name="bottomBar">#4DD1CED5</color>
 
-    <color name="button">#652C53DE</color>
+    <color name="button">#804400FF</color>
 
     <color name="bg">#BCD1CED5</color>
 

@@ -21,6 +21,15 @@
             android:text="Quotify"
             android:textSize="20sp"
             android:textColor="@color/white"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_button"
+            android:src="@drawable/round_refresh"
+            android:padding="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_gravity="end"/>
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
