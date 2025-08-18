@@ -13,23 +13,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/purple_500"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Quotify"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ripple_button"
-            android:src="@drawable/round_refresh"
-            android:padding="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_gravity="end"/>
+                <ImageButton
+                    android:id="@+id/refreshB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_button"
+                    android:src="@drawable/round_refresh"
+                    android:padding="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_gravity="end"/>
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout

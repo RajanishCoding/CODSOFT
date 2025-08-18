@@ -3,12 +3,16 @@ package com.example.quoteapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class QuoteFragment extends Fragment {
@@ -35,11 +36,19 @@ public class QuoteFragment extends Fragment {
     private LinearLayout buttonsLayout;
     private Button favorB;
     private Button shareB;
+    private Button refreshB;
+
+    private String content, author;
 
     private boolean isRandom;
+    private ViewModel viewModel;
 
-    SharedPreferences prefs;
-    SharedPreferences.Editor editor;
+    private boolean isFavourite;
+
+    private RoomDao roomDao;
+
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
 
     public QuoteFragment() {
         // Required empty public constructor
@@ -56,14 +65,6 @@ public class QuoteFragment extends Fragment {
         favorB = view.findViewById(R.id.favorB);
         shareB = view.findViewById(R.id.shareB);
 
-        quoteView.setAlpha(0f);
-        quoteView.setScaleY(0f);
-        quoteText.setAlpha(0f);
-        quoteText.setScaleY(0f);
-        authorText.setAlpha(0f);
-        authorText.setScaleX(0f);
-        buttonsLayout.setAlpha(0f);
-
         return view;
     }
 
@@ -71,20 +72,40 @@ public class QuoteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        roomDao = RoomDB.getDatabase(requireContext()).roomDao();
+
+        viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
+
         prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
         editor = prefs.edit();
+
+        isFavourite = prefs.getBoolean("isFav", false);
+
 
         String storedDate = prefs.getString("date", "");
         String todayDate = getTodayDate();
 
         isRandom = !storedDate.equals(todayDate);
-        showQuote();
+        showQuote(isRandom);
         startAnimation();
 
+//
+        viewModel.getToolbarEvent().observe(getViewLifecycleOwner(), event -> {
+            if ("refresh".equals(event)) {
+                showQuote(true);
+                startAnimation();
+            }
+        });
+
+        viewModel.getAdapterEvent().observe(getViewLifecycleOwner(), id -> {
+            if (id.equals(content + author)) {
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)));
+                isFavourite = false;
+            }
+        });
+
         shareB.setOnClickListener(v -> {
-            String content = quoteText.getText().toString();
-            String author= authorText.getText().toString();
-            String shareText = content + "\n-" + author.substring(3, author.length()-3);
+            String shareText = content + "\n-" + author;
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
@@ -94,11 +115,33 @@ public class QuoteFragment extends Fragment {
         });
 
         favorB.setOnClickListener(v -> {
-;
+            Quote quote = new Quote(content, author);
+
+            if (isFavourite) {
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)));
+                isFavourite = false;
+                new Thread(() -> roomDao.delete(quote)).start();
+            }
+            else {
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red)));
+                isFavourite = true;
+                new Thread(() -> roomDao.insert(quote)).start();
+            }
         });
+
+
     }
 
+
     private void startAnimation() {
+        quoteView.setAlpha(0f);
+        quoteView.setScaleY(0f);
+        quoteText.setAlpha(0f);
+        quoteText.setScaleY(0f);
+        authorText.setAlpha(0f);
+        authorText.setScaleX(0f);
+        buttonsLayout.setAlpha(0f);
+
         quoteView.animate()
                 .scaleY(1f)
                 .alpha(1f)
@@ -129,19 +172,15 @@ public class QuoteFragment extends Fragment {
                 .start();
    }
 
-    private void showQuote() {
-       String content, author;
+    private void showQuote(boolean isRandom) {
        JSONObject quote;
-       String jsonString = JsonParser.loadJSONFromAsset(requireContext(), "quoteList.json");
+       JSONArray quotesList = getQuotesList();
 
        try {
-           JSONObject root = new JSONObject(jsonString);
-           JSONArray results = root.getJSONArray("results");
-
            if (isRandom) {
                Random random = new Random();
-               int randomIndex = random.nextInt(results.length());
-               quote = results.getJSONObject(randomIndex);
+               int randomIndex = random.nextInt(quotesList.length());
+               quote = quotesList.getJSONObject(randomIndex);
 
                editor.putString("date", getTodayDate());
                editor.putInt("index", randomIndex);
@@ -149,7 +188,7 @@ public class QuoteFragment extends Fragment {
            }
            else {
                int index = prefs.getInt("index", 0);
-               quote = results.getJSONObject(index);
+               quote = quotesList.getJSONObject(index);
            }
 
            content = quote.getString("content");
@@ -161,7 +200,33 @@ public class QuoteFragment extends Fragment {
        catch (JSONException e) {
            e.printStackTrace();
        }
+
+       new Thread(() -> {
+            if (roomDao.findQuote(content + author) > 0) {
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red)));
+                isFavourite = true;
+            }
+            else {
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)));
+                isFavourite = false;
+            }
+        }).start();
    }
+
+    private JSONArray getQuotesList() {
+        JSONArray quoteArray = null;
+        String jsonString = JsonParser.loadJSONFromAsset(requireContext(), "quoteList.json");
+
+        try {
+            JSONObject root = new JSONObject(jsonString);
+            quoteArray = root.getJSONArray("results");
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return quoteArray;
+    }
 
     public String getTodayDate() {
         LocalDate today = LocalDate.now();
