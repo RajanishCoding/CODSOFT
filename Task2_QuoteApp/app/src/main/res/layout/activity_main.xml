@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/purple_500"
+        android:background="@color/purple_700"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
 
@@ -38,7 +38,10 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-
+        android:background="@color/topBg"
+        app:tabTextColor="@color/selector_tab"
+        app:tabIconTint="@color/selector_tab"
+        app:tabIndicatorColor="@color/purple_200"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <com.google.android.material.tabs.TabItem
@@ -52,12 +55,19 @@
             android:icon="@drawable/round_favorite"/>
     </com.google.android.material.tabs.TabLayout>
 
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"/>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/gradient_bg"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintTop_toBottomOf="@id/line"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

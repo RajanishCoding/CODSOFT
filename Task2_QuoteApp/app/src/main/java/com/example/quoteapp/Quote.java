@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Objects;
 
 @Entity(tableName = "quotes")
@@ -19,10 +21,13 @@ public class Quote {
     private String content;
     private String author;
 
+    private long dateAddedMillis;
+
     public Quote(String content, String author) {
         this.content = content;
         this.author = author;
         id = content + author;
+        dateAddedMillis = getDateinMillis();
     }
 
     @NonNull
@@ -35,10 +40,25 @@ public class Quote {
     public String getAuthor() { return author; }
     public void setAuthor(String author) { this.author = author; }
 
+    public long getDateAddedMillis() {
+        return dateAddedMillis;
+    }
+
+    public void setDateAddedMillis(long dateAddedMillis) {
+        this.dateAddedMillis = dateAddedMillis;
+    }
+
+    private long getDateinMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Quote)) return false;
 
         Quote other = (Quote) obj;
         return id == other.id &&

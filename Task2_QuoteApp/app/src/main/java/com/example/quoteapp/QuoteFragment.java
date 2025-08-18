@@ -99,7 +99,7 @@ public class QuoteFragment extends Fragment {
 
         viewModel.getAdapterEvent().observe(getViewLifecycleOwner(), id -> {
             if (id.equals(content + author)) {
-                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)));
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.textGrey)));
                 isFavourite = false;
             }
         });
@@ -118,7 +118,7 @@ public class QuoteFragment extends Fragment {
             Quote quote = new Quote(content, author);
 
             if (isFavourite) {
-                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)));
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.textGrey)));
                 isFavourite = false;
                 new Thread(() -> roomDao.delete(quote)).start();
             }

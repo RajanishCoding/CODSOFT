@@ -19,6 +19,12 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteViewHolder> {
 
     private Context context;
@@ -49,12 +55,14 @@ public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteV
     public static class QuoteViewHolder extends RecyclerView.ViewHolder {
         TextView content;
         TextView author;
+        TextView date;
         ImageButton favorB;
 
         public QuoteViewHolder(View view) {
             super(view);
             content = view.findViewById(R.id.contentT);
             author = view.findViewById(R.id.authorT);
+            date = view.findViewById(R.id.dateT);
             favorB = view.findViewById(R.id.favorB);
         }
     }
@@ -73,10 +81,11 @@ public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteV
 
         holder.content.setText(quote.getContent());
         holder.author.setText(quote.getAuthor());
+        holder.date.setText(getFormattedDate(quote.getDateAddedMillis()));
         holder.favorB.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.round_favorite));
 
         holder.favorB.setOnClickListener(v -> {
-            int p = (holder.getAdapterPosition());
+            int p = holder.getAdapterPosition();
             if (p != RecyclerView.NO_POSITION){
                 Quote quote1 = getItem(p);
                 holder.favorB.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.round_favorite_border));
@@ -84,5 +93,11 @@ public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteV
                 viewModel.sendAdapterEvent(quote1.getId());
             }
         });
+    }
+
+    private String getFormattedDate(long millis) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault());
+        String date = simpleDateFormat.format(new Date());
+        return "Added on: " + date;
     }
 }

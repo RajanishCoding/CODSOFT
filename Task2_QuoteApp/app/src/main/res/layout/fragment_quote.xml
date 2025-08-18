@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="5dp"
         android:layout_gravity="center">
 
         <androidx.cardview.widget.CardView
@@ -19,21 +19,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true"
-            app:cardBackgroundColor="#5912007B"
-            android:elevation="0dp"
-            android:outlineSpotShadowColor="#00000000"
-            android:outlineAmbientShadowColor="#00000000"
+            app:cardBackgroundColor="#00000000"
+            app:cardElevation="15dp"
+            android:outlineAmbientShadowColor="@color/black"
+            android:outlineSpotShadowColor="@color/black"
             app:cardCornerRadius="40dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@drawable/gradient_bg2">
 
                 <TextView
                     android:id="@+id/quoteText"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="350dp"
                     android:layout_marginTop="20dp"
                     android:paddingHorizontal="25dp"
                     android:paddingVertical="20dp"
@@ -42,20 +43,20 @@
                     android:lineSpacingExtra="12dp"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="15sp"
-                    android:autoSizeMaxTextSize="25sp"
-                    android:textColor="@color/white"
+                    android:autoSizeMaxTextSize="23sp"
+                    android:textColor="@color/textGrey"
                     android:fontFamily="sans-serif-medium"/>
 
                 <TextView
                     android:id="@+id/authorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="30dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="40dp"
                     android:text="-- Thomas Edison --"
                     android:textSize="20sp"
                     android:fontFamily="monospace"
-                    android:textColor="@color/white"
+                    android:textColor="@color/textGrey"
                     android:textAlignment="center"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -65,7 +66,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="20dp">
+            android:paddingHorizontal="25dp"
+            android:paddingBottom="35dp">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/favorB"
@@ -76,10 +78,10 @@
                 android:background="@drawable/shape_button"
                 android:text="Favorite"
                 android:textSize="15sp"
-                android:textColor="@color/text"
+                android:textColor="@color/textGrey"
                 android:drawableLeft="@drawable/round_favorite"
                 android:paddingHorizontal="15dp"
-                android:drawableTint="#FFE6E6"
+                android:drawableTint="@color/textGrey"
                 />
 
 <!--            <ImageButton-->
@@ -102,10 +104,10 @@
                 android:background="@drawable/shape_button"
                 android:text="Share"
                 android:textSize="15sp"
-                android:textColor="@color/text"
+                android:textColor="@color/textGrey"
                 android:drawableLeft="@drawable/round_share"
                 android:paddingHorizontal="15dp"
-                android:drawableTint="#FFE6E6"
+                android:drawableTint="@color/textGrey"
                 />
         </LinearLayout>
     </LinearLayout>
