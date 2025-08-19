@@ -1,6 +1,5 @@
 package com.example.quoteapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,18 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,6 +26,7 @@ public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteV
     private Context context;
     private RoomDao roomDao;
     private ViewModel viewModel;
+    private FragmentActivity activity;
 
     public static DiffUtil.ItemCallback<Quote> diffCallback = new DiffUtil.ItemCallback<Quote>() {
         @Override
@@ -48,6 +45,7 @@ public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteV
     public FavouriteAdapter(Context context, FragmentActivity activity) {
         super(diffCallback);
         this.context = context;
+        this.activity = activity;
         viewModel = new ViewModelProvider(activity).get(ViewModel.class);
         roomDao = RoomDB.getDatabase(context).roomDao();
     }
@@ -91,13 +89,23 @@ public class FavouriteAdapter extends ListAdapter<Quote, FavouriteAdapter.QuoteV
                 holder.favorB.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.round_favorite_border));
                 new Thread(() -> roomDao.delete(quote1)).start();
                 viewModel.sendAdapterEvent(quote1.getId());
+                Toast.makeText(context, "Removed from Favourites!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            int p = holder.getAdapterPosition();
+            if (p != RecyclerView.NO_POSITION){
+                Quote quote1 = getItem(p);
+                QuoteDialog quoteDialog = new QuoteDialog(quote1);
+                quoteDialog.show(activity.getSupportFragmentManager(), "tag");
             }
         });
     }
 
     private String getFormattedDate(long millis) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault());
-        String date = simpleDateFormat.format(new Date());
-        return "Added on: " + date;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM, yyyy • hh:mm a", Locale.getDefault());
+        String date = simpleDateFormat.format(new Date(millis));
+        return date;
     }
 }

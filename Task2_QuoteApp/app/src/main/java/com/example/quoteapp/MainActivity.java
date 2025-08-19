@@ -1,5 +1,7 @@
 package com.example.quoteapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -24,11 +26,20 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton refreshB;
     private ViewModel viewModel;
 
+    private boolean isAsc;
+
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_700));
+
+        prefs = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        editor = prefs.edit();
 
         toolbar = findViewById(R.id.toolbar);
         viewPager = findViewById(R.id.viewPager);
@@ -55,10 +66,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-                    refreshB.setVisibility(View.VISIBLE);
+                    refreshB.setImageResource(R.drawable.round_refresh);
                 }
                 else if (tab.getPosition() == 1) {
-                    refreshB.setVisibility(View.GONE);
+                    isAsc = prefs.getBoolean("isAsc", false);
+                    refreshB.setImageResource(isAsc ? R.drawable.asc_sort : R.drawable.desc_sort);
                 }
             }
 
@@ -70,7 +82,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         refreshB.setOnClickListener(v -> {
-            viewModel.sendToolbarEvent("refresh");
+            if (viewPager.getCurrentItem() == 0)
+                viewModel.sendToolbarEvent("refresh");
+            else {
+                isAsc = prefs.getBoolean("isAsc", false);
+                viewModel.sendFragmentEvent(isAsc);
+                refreshB.setImageResource(isAsc ? R.drawable.desc_sort : R.drawable.asc_sort);
+            }
         });
     }
 }

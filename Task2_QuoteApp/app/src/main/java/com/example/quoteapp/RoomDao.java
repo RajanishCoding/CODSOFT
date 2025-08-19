@@ -17,8 +17,11 @@ public interface RoomDao {
     @Delete
     void delete(Quote quote);
 
-    @Query("SELECT * FROM quotes")
-    LiveData<List<Quote>> getAllQuotes();
+    @Query("SELECT * FROM quotes order by dateAddedMillis asc")
+    LiveData<List<Quote>> getAllQuotesAsc();
+
+    @Query("SELECT * FROM quotes order by dateAddedMillis desc")
+    LiveData<List<Quote>> getAllQuotesDesc();
 
     @Query("select COUNT(*) from quotes where id = :id")
     int findQuote(String id);

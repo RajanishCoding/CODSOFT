@@ -29,19 +29,21 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ripple_button"
                     android:src="@drawable/round_refresh"
+                    app:tint="@color/textGrey"
                     android:padding="10dp"
                     android:layout_marginEnd="15dp"
-                    android:layout_gravity="end"/>
+                    android:layout_gravity="end"
+                    />
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/topBg"
+        android:background="@drawable/gradient_bg3"
         app:tabTextColor="@color/selector_tab"
         app:tabIconTint="@color/selector_tab"
-        app:tabIndicatorColor="@color/purple_200"
+        app:tabIndicatorColor="@color/purple_700"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <com.google.android.material.tabs.TabItem
@@ -58,8 +60,8 @@
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"
+        android:layout_height=".5dp"
+        android:background="@color/textGreyRev"
         app:layout_constraintTop_toBottomOf="@id/tabLayout"/>
 
     <androidx.viewpager2.widget.ViewPager2

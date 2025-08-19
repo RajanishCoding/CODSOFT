@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<FrameLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
-    tools:context=".QuoteFragment">
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,6 +21,8 @@
             app:cardUseCompatPadding="true"
             app:cardBackgroundColor="#00000000"
             app:cardElevation="15dp"
+            android:outlineAmbientShadowColor="@color/black"
+            android:outlineSpotShadowColor="@color/black"
             app:cardCornerRadius="40dp">
 
             <LinearLayout
@@ -33,7 +35,7 @@
                     android:id="@+id/quoteText"
                     android:layout_width="match_parent"
                     android:layout_height="350dp"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginTop="30dp"
                     android:paddingHorizontal="25dp"
                     android:paddingVertical="20dp"
                     android:gravity="center"
@@ -42,8 +44,7 @@
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="15sp"
                     android:autoSizeMaxTextSize="23sp"
-                    android:autoSizeStepGranularity="1sp"
-                    android:textColor="@color/text"
+                    android:textColor="@color/textGrey"
                     android:fontFamily="sans-serif-medium"/>
 
                 <TextView
@@ -97,20 +98,20 @@
                 android:textColor="@color/textGrey"
                 android:drawableStart="@drawable/round_favorite"
                 android:paddingHorizontal="15dp"
-                android:drawableTint="@color/textGrey"
+                android:drawableTint="@color/red"
                 />
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/refreshB"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@drawable/shape_button"-->
-<!--                android:src="@drawable/round_refresh"-->
-<!--                app:tint="@color/white"-->
-<!--                android:padding="10dp"-->
-<!--                android:layout_marginEnd="10dp"-->
-<!--                android:layout_gravity="end"-->
-<!--                />-->
+            <!--            <ImageButton-->
+            <!--                android:id="@+id/refreshB"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:background="@drawable/shape_button"-->
+            <!--                android:src="@drawable/round_refresh"-->
+            <!--                app:tint="@color/white"-->
+            <!--                android:padding="10dp"-->
+            <!--                android:layout_marginEnd="10dp"-->
+            <!--                android:layout_gravity="end"-->
+            <!--                />-->
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/shareB"

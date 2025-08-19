@@ -1,5 +1,7 @@
 package com.example.quoteapp;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,8 +20,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +40,7 @@ public class QuoteFragment extends Fragment {
     private LinearLayout buttonsLayout;
     private Button favorB;
     private Button shareB;
-    private Button refreshB;
+    private ImageButton copyB;
 
     private String content, author;
 
@@ -64,6 +68,7 @@ public class QuoteFragment extends Fragment {
         buttonsLayout = view.findViewById(R.id.buttonsLayout);
         favorB = view.findViewById(R.id.favorB);
         shareB = view.findViewById(R.id.shareB);
+        copyB = view.findViewById(R.id.copyB);
 
         return view;
     }
@@ -89,11 +94,10 @@ public class QuoteFragment extends Fragment {
         showQuote(isRandom);
         startAnimation();
 
-//
         viewModel.getToolbarEvent().observe(getViewLifecycleOwner(), event -> {
             if ("refresh".equals(event)) {
                 showQuote(true);
-                startAnimation();
+                startAnimation2();
             }
         });
 
@@ -121,22 +125,30 @@ public class QuoteFragment extends Fragment {
                 TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.textGrey)));
                 isFavourite = false;
                 new Thread(() -> roomDao.delete(quote)).start();
+                Toast.makeText(requireContext(), "Removed from Favourites!", Toast.LENGTH_SHORT).show();
             }
             else {
                 TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red)));
                 isFavourite = true;
                 new Thread(() -> roomDao.insert(quote)).start();
+                Toast.makeText(requireContext(), "Added to Favourites!", Toast.LENGTH_SHORT).show();
             }
         });
 
-
+        copyB.setOnClickListener(v -> {
+            String copyText = content + "\n-" + author;
+            ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("label", copyText);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(requireContext(), "Quote Copied!", Toast.LENGTH_SHORT).show();
+        });
     }
-
 
     private void startAnimation() {
         quoteView.setAlpha(0f);
         quoteView.setScaleY(0f);
         quoteText.setAlpha(0f);
+        quoteText.setScaleX(0f);
         quoteText.setScaleY(0f);
         authorText.setAlpha(0f);
         authorText.setScaleX(0f);
@@ -149,9 +161,12 @@ public class QuoteFragment extends Fragment {
 //                .setInterpolator(new BounceInterpolator())
                 .start();
 
-        quoteText.setPivotY(0f);
+//        quoteText.setPivotX(quoteText.getWidth()/2f);
+//        quoteText.setPivotY(quoteText.getHeight()/2f);
         quoteText.animate()
-                .withStartAction(() -> quoteText.setAlpha(1f))
+//                .withStartAction(() -> quoteText.setAlpha(1f))
+                .alpha(1f)
+                .scaleX(1f)
                 .scaleY(1f)
                 .setStartDelay(600)
                 .setDuration(600)
@@ -161,16 +176,41 @@ public class QuoteFragment extends Fragment {
                 .withStartAction(() -> quoteText.setAlpha(1f))
                 .scaleX(1f)
                 .alpha(1f)
-                .setStartDelay(1000)
+                .setStartDelay(1200)
                 .setDuration(400)
                 .start();
 
         buttonsLayout.animate()
                 .alpha(1f)
-                .setStartDelay(1400)
+                .setStartDelay(1600)
                 .setDuration(500)
                 .start();
    }
+
+    private void startAnimation2() {
+        quoteText.setAlpha(0f);
+        quoteText.setScaleX(0f);
+        quoteText.setScaleY(0f);
+        authorText.setAlpha(0f);
+        authorText.setScaleX(0f);
+
+        quoteText.animate()
+//                .withStartAction(() -> quoteText.setAlpha(1f))
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setStartDelay(0)
+                .setDuration(600)
+                .start();
+
+        authorText.animate()
+                .withStartAction(() -> quoteText.setAlpha(1f))
+                .scaleX(1f)
+                .alpha(1f)
+                .setStartDelay(600)
+                .setDuration(400)
+                .start();
+    }
 
     private void showQuote(boolean isRandom) {
        JSONObject quote;
@@ -207,7 +247,7 @@ public class QuoteFragment extends Fragment {
                 isFavourite = true;
             }
             else {
-                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)));
+                TextViewCompat.setCompoundDrawableTintList(favorB, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.textGrey)));
                 isFavourite = false;
             }
         }).start();

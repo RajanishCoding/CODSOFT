@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:layout_marginTop="10dp"
+    android:layout_marginVertical="5dp"
     android:clickable="true"
     android:focusable="true"
     android:background="@drawable/selector_list_view">
@@ -28,7 +28,7 @@
             android:text="Hello World"
             android:textSize="18sp"
             android:textColor="@color/textGrey"
-            android:maxLines="5"
+            android:maxLines="4"
             android:ellipsize="end" />
 
         <TextView
@@ -62,7 +62,7 @@
         android:layout_marginHorizontal="10dp"
         android:contentDescription="Remove from Favourites"
         android:src="@drawable/round_favorite"
-        app:tint="@color/purple_500"
+        app:tint="@color/red"
         android:background="@android:color/transparent"
         />
 

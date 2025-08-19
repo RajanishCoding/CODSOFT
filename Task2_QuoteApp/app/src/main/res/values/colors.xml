@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#A4B8FF</color>
+    <color name="purple_200">#D2A4FF</color>
     <color name="purple_500">#2F00FF</color>
     <color name="purple_700">#2A0089</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="red">#FF0000</color>
+    <color name="red">#FF4A44</color>
     <color name="topBg">#1D002E</color>
 
     <color name="black">#FF000000</color>
@@ -18,13 +18,13 @@
 
     <color name="bottomBar">#4DD1CED5</color>
 
-    <color name="button">#801E00A7</color>
+    <color name="button">#292966</color>
 
     <color name="bg">#BCD1CED5</color>
 
     <color name="overlayItemDetails">#59536A</color>
     <!--  urgent  -->
-    <color name="overlayListSelector">#80535353</color>
-    <color name="overlayList">#803E3E3E</color>
+    <color name="overlayListSelector">#99414141</color>
+    <color name="overlayList">#80121212</color>
 
 </resources>
