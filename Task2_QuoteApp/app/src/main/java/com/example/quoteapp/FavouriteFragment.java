@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ public class FavouriteFragment extends Fragment {
     private RoomDao roomDao;
     private RecyclerView recyclerView;
     private FavouriteAdapter adapter;
+    private TextView emptyT;
 
     private ViewModel viewModel;
     LiveData<List<Quote>> liveData;
@@ -43,6 +45,7 @@ public class FavouriteFragment extends Fragment {
         roomDao = RoomDB.getDatabase(requireContext()).roomDao();
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
         recyclerView = view.findViewById(R.id.recyclerView);
+        emptyT = view.findViewById(R.id.emptyT);
 
         return view;
     }
@@ -79,7 +82,8 @@ public class FavouriteFragment extends Fragment {
         liveData = isAsc ? roomDao.getAllQuotesAsc() : roomDao.getAllQuotesDesc();
         liveData.observe(getViewLifecycleOwner(), quotes -> {
             adapter.submitList(quotes);
-            recyclerView.post(() -> recyclerView.scrollToPosition(0));
+            if (quotes.isEmpty()) emptyT.setVisibility(View.VISIBLE);
+            else emptyT.setVisibility(View.GONE);
         });
     }
 }

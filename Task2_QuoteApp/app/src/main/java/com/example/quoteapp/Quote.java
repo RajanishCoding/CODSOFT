@@ -1,11 +1,12 @@
 package com.example.quoteapp;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
+//import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.util.Calendar;

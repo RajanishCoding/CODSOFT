@@ -5,7 +5,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Quote.class}, version = 1, exportSchema = false)
+@Database(entities = {Quote.class}, version = 2, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
 
     private static volatile RoomDB INSTANCE;
@@ -20,7 +20,7 @@ public abstract class RoomDB extends RoomDatabase {
                             context.getApplicationContext(),
                             RoomDB.class,
                             "quote_database"
-                    ).build();
+                    ).fallbackToDestructiveMigration().build();
                 }
             }
         }

@@ -13,4 +13,15 @@
         android:layout_marginBottom="0dp"
         />
 
+    <TextView
+        android:id="@+id/emptyT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No favourite quotes yet.\nStart adding your favourite quotes."
+        android:textSize="18sp"
+        android:textColor="@color/textGreyRev"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:visibility="gone"/>
+
 </FrameLayout>
