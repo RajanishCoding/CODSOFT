@@ -34,26 +34,29 @@ public class NotificationAlarm extends BroadcastReceiver {
         return pendingIntent;
     }
 
-    public static void scheduleTask(Context context, String id, String taskTitle, long targetTimeMillis) {
+    public static void scheduleTask(Context context, String id, String taskTitle, long dueTimeMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5, getPendingIntent(context, id, taskTitle));
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, dueTimeMillis, getPendingIntent(context, id, taskTitle));
             }
             else {
-                NotificationWork.scheduleTask(context, id, taskTitle, 5);
+                NotificationWork.scheduleTask(context, id, taskTitle, dueTimeMillis);
                 Intent intent1 = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
                 intent1.setData(Uri.parse("package:" + context.getPackageName()));
                 context.startActivity(intent1);
             }
         }
+        else {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, dueTimeMillis, getPendingIntent(context, id, taskTitle));
+        }
     }
 
-    public static void updateScheduledTask(Context context, String id, String taskTitle, long dueTimeInMillis) {
+    public static void updateScheduledTask(Context context, String id, String taskTitle, long dueTimeMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         cancelScheduledTask(context, id, taskTitle);
-        scheduleTask(context, id, taskTitle, dueTimeInMillis);
+        scheduleTask(context, id, taskTitle, dueTimeMillis);
     }
 
     public static void cancelScheduledTask(Context context, String id, String taskTitle) {

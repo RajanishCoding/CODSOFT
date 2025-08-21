@@ -28,14 +28,13 @@ public class NotificationWork extends Worker {
     }
 
 
-    public static void scheduleTask(Context context, String id, String taskTitle, long delayTimeMillis) {
+    public static void scheduleTask(Context context, String id, String taskTitle, long dueTimeMillis) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(delayTimeMillis);
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE));
-        delayTimeMillis = calendar.getTimeInMillis();
-//        long delay = delayTimeMillis - System.currentTimeMillis();
-        long delay = 5;
+        calendar.setTimeInMillis(dueTimeMillis);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
+        dueTimeMillis = calendar.getTimeInMillis();
+        long delay = dueTimeMillis - System.currentTimeMillis();
 
         Data data = new Data.Builder()
                 .putString("id", id)
@@ -51,9 +50,9 @@ public class NotificationWork extends Worker {
         WorkManager.getInstance(context).enqueue(workRequest);
     }
 
-    public static void updateScheduledTask(Context context, String id, String taskTitle, long dueTimeInMillis) {
+    public static void updateScheduledTask(Context context, String id, String taskTitle, long dueTimeMillis) {
         cancelScheduledTask(context, id);
-        scheduleTask(context, id, taskTitle, dueTimeInMillis);
+        scheduleTask(context, id, taskTitle, dueTimeMillis);
     }
 
     public static void cancelScheduledTask(Context context, String id) {
