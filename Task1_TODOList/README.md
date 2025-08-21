@@ -5,14 +5,14 @@ The ToDo List App helps you manage tasks in a simple, organized way. You can cre
 ---
 
 ## Features
-- **Add, Edit & Delete Tasks** — Quickly create new tasks, update them, or remove them permanently when not needed.  
-- **Due Date Selection** — Set a specific date for each task to manage deadlines effectively.
-- **Priority Levels** — Mark tasks as Low, Medium, High, or Urgent for better organization.
-- **Mark as Completed** — Mark tasks as done without deleting them, so you can keep a record of finished work.  
-- **Mark as Important** — Highlight important tasks separately for quick access and attention.  
-- **Color Codes** — Each priority has its own color so you can spot important work at a glance.  
-- **Always Saved** — Your tasks remain even if you close or restart the app.  
-- **Easy Navigation** — Clean, dark-mode-friendly design for comfortable use anytime.  
+- **Add, Edit & Delete Tasks** - Quickly create new tasks, update them, or remove them permanently when not needed.  
+- **Due Date Selection** - Set a specific date for each task to manage deadlines effectively.
+- **Priority Levels** - Mark tasks as Low, Medium, High, or Urgent for better organization.
+- **Mark as Completed** - Mark tasks as done without deleting them, so you can keep a record of finished work.  
+- **Mark as Important** - Highlight important tasks separately for quick access and attention.  
+- **Color Codes** - Each priority has its own color so you can spot important work at a glance.  
+- **Always Saved** - Your tasks remain even if you close or restart the app.  
+- **Easy Navigation** - Clean, dark-mode-friendly design for comfortable use anytime.  
 
 ---
 
