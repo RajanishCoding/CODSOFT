@@ -1,23 +1,27 @@
 package com.example.todolist;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,15 +30,23 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class TaskDialog extends DialogFragment {
@@ -56,8 +68,12 @@ public class TaskDialog extends DialogFragment {
     private TextView title;
     private TextInputEditText titleE;
     private TextInputEditText detE;
+    private TextInputLayout dateL;
     private TextInputEditText dateE;
+    private TextInputLayout timeL;
+    private TextInputEditText timeE;
     private AutoCompleteTextView priorityDropdown;
+    private CheckBox checkB;
     private Button cancelB;
     private Button doneB;
     private LinearLayout btnLayout;
@@ -72,7 +88,10 @@ public class TaskDialog extends DialogFragment {
 
     public long selectedTimeMillis;
     public long creationTimeMillis;
+    private MyPair<Integer, Integer> time;
     public int priority = 0;
+
+    private Context context;
 
     public TaskDialog(int fragmentPos, int mode, Task task) {
         this.fragmentPos = fragmentPos;
@@ -103,8 +122,12 @@ public class TaskDialog extends DialogFragment {
         title = view.findViewById(R.id.titleText);
         titleE = view.findViewById(R.id.titleE);
         detE = view.findViewById(R.id.detE);
+        dateL = view.findViewById(R.id.dateInputL);
         dateE = view.findViewById(R.id.datePickerE);
+        timeL = view.findViewById(R.id.timeInputL);
+        timeE = view.findViewById(R.id.timePickerE);
         priorityDropdown = view.findViewById(R.id.priorityDropdown);
+        checkB = view.findViewById(R.id.checkB);
 
         cancelB = view.findViewById(R.id.decline_button);
         doneB = view.findViewById(R.id.accept_button);
@@ -115,7 +138,8 @@ public class TaskDialog extends DialogFragment {
         starB = view.findViewById(R.id.starB);
         delB = view.findViewById(R.id.delB);
 
-        roomDao = RoomDB.getDatabase(requireContext()).roomDao();
+        context = requireContext();
+        roomDao = RoomDB.getDatabase(context).roomDao();
 
         setCancelable(false);
 
@@ -127,7 +151,7 @@ public class TaskDialog extends DialogFragment {
         startAnimation(view);
 
         String[] priorities = {"None", "Low", "Normal", "High", "Urgent"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_layout, priorities);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.dropdown_layout, priorities);
         priorityDropdown.setAdapter(adapter);
 
         if (mode == 2) {
@@ -137,14 +161,22 @@ public class TaskDialog extends DialogFragment {
             detE.setText(task.getDetail());
             dateE.setText(task.getDueDate());
 
+            if (!task.getDueTime().isEmpty()){
+                timeL.setVisibility(View.VISIBLE);
+                timeE.setText(task.getDueTime());
+            }
+
             priority = task.getPriority();
             priorityDropdown.setText(priorities[priority], false);
 
+            time = task.getTime();
             isCompleted = task.isCompleted();
             isImportant = task.isImportant();
             compB.setChecked(isCompleted);
             starB.setImageResource(isImportant ? R.drawable.round_star : R.drawable.round_star_outline);
             selectedTimeMillis = task.getDateInMillis();
+            time = task.getTime();
+            Log.d("dhdad", "onViewCreated: " + task.getTime().first);
         }
         else {
             delB.setVisibility(View.GONE);
@@ -162,31 +194,23 @@ public class TaskDialog extends DialogFragment {
 
 
         priorityDropdown.setOnItemClickListener((parent, view1, position, id) -> {
-//            TextView textView = (TextView) view1;
             priority = position;
         });
 
-
-        Calendar calendar = Calendar.getInstance();
-        int yr = calendar.get(Calendar.YEAR);
-        int m = calendar.get(Calendar.MONTH);
-        int d = calendar.get(Calendar.DAY_OF_MONTH);
-
         dateE.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
-                    (vw, year, month, dayOfMonth) -> {
-                        Calendar selectedCal = Calendar.getInstance();
-                        selectedCal.set(year, month, dayOfMonth);
+            showDatePicker();
+        });
 
-                        selectedTimeMillis = selectedCal.getTimeInMillis();
+        dateL.setEndIconOnClickListener(v -> {
+            if (timeL.getVisibility() == View.GONE) {
+                if (time != null) showTimePicker(time.first, time.second);
+                else showTimePicker(11, 0);
+            }
+            else timeL.setVisibility(View.GONE);
+        });
 
-                        // Format: "Mon, 22 Jul, 2025"
-                        String formattedDate = new SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault())
-                                .format(new Date(selectedTimeMillis));
-                        dateE.setText(formattedDate);
-
-                    }, yr, m, d);
-            datePickerDialog.show();
+        timeE.setOnClickListener(v -> {
+            showTimePicker(time.first, time.second);
         });
 
         infoB.setOnClickListener(v -> {
@@ -220,7 +244,10 @@ public class TaskDialog extends DialogFragment {
                 if (mode == 1) {
                     creationTimeMillis = getCreationDateinMillis();
                     Task task = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
-                            dateE.getText().toString().trim(), priority, selectedTimeMillis, creationTimeMillis);
+                            dateE.getText().toString().trim(), timeE.getText().toString().trim(),
+                            priority, selectedTimeMillis, creationTimeMillis);
+
+                    task.setTime(time != null ? time : null);
 
                     if (isImportant) task.setImportants(true);
                     else task.setImportant(false);
@@ -228,13 +255,23 @@ public class TaskDialog extends DialogFragment {
                     else task.setCompleted(false);
 
                     taskListener.onTaskAdded(task);
+
+                    if (!isCompleted && task.getDateInMillis() > System.currentTimeMillis()) {
+                        if (timeL.getVisibility() == View.VISIBLE)
+                            NotificationAlarm.scheduleTask(context, task.getId(), task.getTitle(), task.getDateInMillis());
+                        else
+                            NotificationWork.scheduleTask(context, task.getId(), task.getTitle(), task.getDateInMillis());
+                    }
                 }
                 else {
                     Task newTask = new Task(titleE.getText().toString().trim(), detE.getText().toString().trim(),
-                            dateE.getText().toString().trim(), priority, selectedTimeMillis, task.getCreationDateinMillis());
-                    Log.d("priortity", "onViewCreated: " + priority);
+                            dateE.getText().toString().trim(), timeE.getText().toString().trim(),
+                            priority, selectedTimeMillis, task.getCreationDateinMillis());
+
                     newTask.setId(task.getId());
                     newTask.setPos(task.getPos());
+
+                    newTask.setTime(time != null ? time : null);
 
                     if (isCompleted != task.isCompleted()) newTask.setCompletion(isCompleted);
                     else {
@@ -248,6 +285,19 @@ public class TaskDialog extends DialogFragment {
                     }
 
                     new Thread(() -> roomDao.update(newTask)).start();
+
+                    if (isCompleted || newTask.getDateInMillis() < System.currentTimeMillis()) {
+                        if (timeL.getVisibility() == View.VISIBLE)
+                            NotificationAlarm.cancelScheduledTask(context, newTask.getId(), newTask.getTitle());
+                        else
+                            NotificationWork.cancelScheduledTask(context, newTask.getId());
+                    }
+                    else {
+                        if (timeL.getVisibility() == View.VISIBLE)
+                            NotificationAlarm.updateScheduledTask(context, newTask.getId(), newTask.getTitle(), newTask.getDateInMillis());
+                        else
+                            NotificationWork.updateScheduledTask(context, newTask.getId(), newTask.getTitle(), newTask.getDateInMillis());
+                    }
                 }
                 dismiss();
             }
@@ -338,6 +388,71 @@ public class TaskDialog extends DialogFragment {
         });
     }
 
+    private void showDatePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select Date")
+                .build();
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            if (time != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+
+                calendar.set(Calendar.HOUR_OF_DAY, time.first);
+                calendar.set(Calendar.MINUTE, time.second);
+
+                selectedTimeMillis = calendar.getTimeInMillis();
+            } else selectedTimeMillis = selection;
+
+            // Format: "Mon, 22 Jul, 2025"
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault());
+            String str = dateFormat.format(new Date(selectedTimeMillis));
+            dateE.setText(str);
+
+//            if (!dateE.getText().toString().isEmpty()) {
+//                String s1 = "Send a Notification ";
+//                String s2 =  dateE.getText().toString();
+//                String s3 = timeE.getText().toString().isEmpty() ? "around 11:00 AM." : "at " + timeE.getText();
+//                checkB.setText(at " +  + formatDueDate(str) + );
+//            }
+        });
+
+        datePicker.show(getChildFragmentManager(), "date");
+    }
+
+    private void showTimePicker(int hr, int m) {
+        MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(hr)
+                .setMinute(m)
+                .setTitleText("Select Time")
+                .build();
+
+        timePicker.addOnPositiveButtonClickListener(view -> {
+            time = new MyPair<>(timePicker.getHour(), timePicker.getMinute());
+
+            Calendar calendar = Calendar.getInstance();
+
+            if (selectedTimeMillis != 0) {
+                calendar.setTimeInMillis(selectedTimeMillis);
+            }
+
+            calendar.set(Calendar.HOUR_OF_DAY, time.first);
+            calendar.set(Calendar.MINUTE, time.second);
+            selectedTimeMillis = calendar.getTimeInMillis();
+
+            // Format: "11:55 AM"
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            String str = dateFormat.format(new Date(selectedTimeMillis));
+            timeE.setText(str.toUpperCase());
+            timeL.setVisibility(View.VISIBLE);
+
+
+        });
+
+        timePicker.show(getChildFragmentManager(), "time");
+    }
+
     private void startAnimation(View root) {
         root.setScaleX(0.5f);
         root.setScaleY(0.5f);
@@ -351,6 +466,8 @@ public class TaskDialog extends DialogFragment {
                 .setDuration(300)
                 .setInterpolator(new DecelerateInterpolator())
                 .start();
+
+//        LinearLayout rootl = (LinearLayout) root;
 
         titleE.setAlpha(0f);
         titleE.animate()
@@ -373,17 +490,24 @@ public class TaskDialog extends DialogFragment {
                 .setDuration(300)
                 .start();
 
+        timeE.setAlpha(0f);
+        timeE.animate()
+                .alpha(1f)
+                .setStartDelay(450)
+                .setDuration(300)
+                .start();
+
         priorityDropdown.setAlpha(0f);
         priorityDropdown.animate()
                 .alpha(1f)
-                .setStartDelay(450)
+                .setStartDelay(550)
                 .setDuration(300)
                 .start();
 
         btnLayout.setAlpha(0f);
         btnLayout.animate()
                 .alpha(1f)
-                .setStartDelay(550)
+                .setStartDelay(650)
                 .setDuration(300)
                 .start();
     }
@@ -391,10 +515,10 @@ public class TaskDialog extends DialogFragment {
 
     private boolean isTaskValid() {
         if (titleE.getText().toString().trim().isEmpty()) {
-            Toast.makeText(requireContext(), "Please write the Title!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please write the Title!", Toast.LENGTH_SHORT).show();
         }
         else if (dateE.getText().toString().trim().isEmpty()) {
-            Toast.makeText(requireContext(), "Please select the Date!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please select the Date!", Toast.LENGTH_SHORT).show();
         }
         else {
             return true;
@@ -440,6 +564,17 @@ public class TaskDialog extends DialogFragment {
         Date date = new Date(millis);
         SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy", Locale.getDefault());
         return str.format(date);
+    }
+
+
+    public static String formatDueDate(String date) {
+        int current = Calendar.getInstance().get(Calendar.YEAR);
+
+        String[] parts = date.split(", ");
+        int year = Integer.parseInt(parts[1]);
+
+        if (year == current) return parts[1];
+        else return parts[1] + ", " + parts[2];
     }
 
 

@@ -307,7 +307,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsround/add/round_add_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsround/access_time/round_access_time_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -317,7 +317,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="round_add" />
+                            <entry key="outputName" value="round_access_time" />
                             <entry key="sourceFile" value="D:\Coding\Coding\AndroidStudioProjects\CodSoft_Projects\CODSOFT\Task1_TODOList" />
                           </map>
                         </option>

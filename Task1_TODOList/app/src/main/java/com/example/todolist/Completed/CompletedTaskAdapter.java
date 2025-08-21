@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.NotificationAlarm;
+import com.example.todolist.NotificationWork;
 import com.example.todolist.R;
 import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
@@ -100,7 +102,7 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
 
         holder.title.setText(task.getTitle());
         holder.title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.dueDateT.setVisibility(View.GONE);
+        holder.leftDaysT.setVisibility(View.GONE);
 
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {
@@ -132,7 +134,7 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
                 break;
         }
 
-        holder.leftDaysT.setText("Completed: " + getFullDateFromMillis(task.getCompletedDateinMillis()));
+        holder.dueDateT.setText("Completed: " + getFullDateFromMillis(task.getCompletedDateinMillis()));
 
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
@@ -150,6 +152,11 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
             if (!isChecked) {
                 taskC.setCompletion(false);
                 new Thread(() -> roomDao.update(taskC)).start();
+
+                if (!taskC.getDueTime().isEmpty())
+                    NotificationAlarm.scheduleTask(context, taskC.getId(), taskC.getTitle(), taskC.getDateInMillis());
+                else
+                    NotificationWork.scheduleTask(context, taskC.getId(), taskC.getTitle(), taskC.getDateInMillis());
             }
         });
 
@@ -206,6 +213,17 @@ public class CompletedTaskAdapter extends ListAdapter<Task, CompletedTaskAdapter
         SimpleDateFormat str = new SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault());
         return str.format(date);
     }
+
+    public static String formatDueDate(String date) {
+        int current = Calendar.getInstance().get(Calendar.YEAR);
+
+        String[] parts = date.split(", ");
+        int year = Integer.parseInt(parts[2]);
+
+        if (year == current) return parts[0] + ", " + parts[1];
+        else return date;
+    }
+
 
     @Override
     public int getItemCount() {

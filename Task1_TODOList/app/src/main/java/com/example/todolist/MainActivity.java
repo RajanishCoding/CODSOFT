@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.todolist.Room.RoomDB;
+import com.example.todolist.Room.RoomDao;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private int sortType;
     private boolean sortOrder;
 
+    private RoomDao roomDao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.toolbarG));
 
+        roomDao = RoomDB.getDatabase(this).roomDao();
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -88,6 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setCurrentItem(selectedPos, true);
         tabLayout.selectTab(tabLayout.getTabAt(selectedPos));
+
+        if (getIntent().hasExtra("id")) {
+            String id = getIntent().getStringExtra("id");
+            new Thread(() -> {
+                TaskDialog taskDialog = new TaskDialog(0, 2, roomDao.getTaskById(id));
+                taskDialog.show(getSupportFragmentManager(), taskDialog.getTag());
+            }).start();
+        }
 
         addTaskB.setOnClickListener(v -> {
             TaskDialog taskDialog = new TaskDialog(viewPager.getCurrentItem(), 1, null);

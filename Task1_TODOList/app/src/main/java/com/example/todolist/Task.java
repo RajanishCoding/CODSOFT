@@ -19,9 +19,12 @@ public class Task {
     private String title;
     private String detail;
     private String dueDate;
+    private String dueTime;
     private int priority;
     private Long dateInMillis;
     private Long creationDateinMillis;
+
+    private MyPair<Integer, Integer> time;
 
     private Long completedDateinMillis;
     private Long starredDateinMillis;
@@ -31,10 +34,11 @@ public class Task {
     private boolean isCompleted;
     private boolean isImportant;
 
-    public Task(String title, String detail, String dueDate, int priority, Long dateInMillis, Long creationDateinMillis) {
+    public Task(String title, String detail, String dueDate, String dueTime, int priority, Long dateInMillis, Long creationDateinMillis) {
         this.title = title;
         this.detail = detail;
         this.dueDate = dueDate;
+        this.dueTime = dueTime;
         this.priority = priority;
         this.dateInMillis = dateInMillis;
         this.creationDateinMillis = creationDateinMillis;
@@ -75,6 +79,14 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+    public String getDueTime() {
+        return dueTime;
+    }
+
+    public void setDueTime(String dueTime) {
+        this.dueTime = dueTime;
+    }
+
     public int getPriority() {
         return priority;
     }
@@ -89,6 +101,14 @@ public class Task {
 
     public Long getDateInMillis() {
         return dateInMillis;
+    }
+
+    public void setTime(MyPair<Integer, Integer> time) {
+        this.time = time;
+    }
+
+    public MyPair<Integer, Integer> getTime() {
+        return time;
     }
 
     public Long getCreationDateinMillis() {

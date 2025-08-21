@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.NotificationAlarm;
+import com.example.todolist.NotificationWork;
 import com.example.todolist.R;
 import com.example.todolist.Room.RoomDB;
 import com.example.todolist.Room.RoomDao;
@@ -98,7 +100,9 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         if (task == null) return;
 
         holder.title.setText(task.getTitle());
-        holder.dueDateT.setText(task.getDueDate());
+
+        if (task.getDueTime().isEmpty()) holder.dueDateT.setText(formatDueDate(task.getDueDate()));
+        else holder.dueDateT.setText(formatDueDate(task.getDueDate()) + " • " + task.getDueTime());
 
         if (task.getDetail().isEmpty()) holder.details.setVisibility(View.GONE);
         else {
@@ -160,6 +164,11 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
             if (isChecked) {
                 taskC.setCompletion(true);
                 new Thread(() -> roomDao.update(taskC)).start();
+
+                if (!taskC.getDueTime().isEmpty())
+                    NotificationAlarm.cancelScheduledTask(context, taskC.getId(), taskC.getTitle());
+                else
+                    NotificationWork.cancelScheduledTask(context, taskC.getId());
             }
         });
 
@@ -208,6 +217,17 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
 
         return TimeUnit.MILLISECONDS.toDays(diffMillis);
     }
+
+    public static String formatDueDate(String date) {
+        int current = Calendar.getInstance().get(Calendar.YEAR);
+
+        String[] parts = date.split(", ");
+        int year = Integer.parseInt(parts[2]);
+
+        if (year == current) return parts[0] + ", " + parts[1];
+        else return date;
+    }
+
 
     @Override
     public int getItemCount() {
