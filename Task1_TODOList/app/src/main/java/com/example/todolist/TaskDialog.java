@@ -175,8 +175,6 @@ public class TaskDialog extends DialogFragment {
             compB.setChecked(isCompleted);
             starB.setImageResource(isImportant ? R.drawable.round_star : R.drawable.round_star_outline);
             selectedTimeMillis = task.getDateInMillis();
-            time = task.getTime();
-            Log.d("dhdad", "onViewCreated: " + task.getTime().first);
         }
         else {
             delB.setVisibility(View.GONE);
@@ -206,7 +204,18 @@ public class TaskDialog extends DialogFragment {
                 if (time != null) showTimePicker(time.first, time.second);
                 else showTimePicker(11, 0);
             }
-            else timeL.setVisibility(View.GONE);
+            else {
+                timeL.setVisibility(View.GONE);
+                timeE.setText(null);
+                time = null;
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selectedTimeMillis);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                selectedTimeMillis = calendar.getTimeInMillis();
+            }
         });
 
         timeE.setOnClickListener(v -> {
@@ -247,7 +256,7 @@ public class TaskDialog extends DialogFragment {
                             dateE.getText().toString().trim(), timeE.getText().toString().trim(),
                             priority, selectedTimeMillis, creationTimeMillis);
 
-                    task.setTime(time != null ? time : null);
+                    task.setTime(time);
 
                     if (isImportant) task.setImportants(true);
                     else task.setImportant(false);
@@ -271,7 +280,7 @@ public class TaskDialog extends DialogFragment {
                     newTask.setId(task.getId());
                     newTask.setPos(task.getPos());
 
-                    newTask.setTime(time != null ? time : null);
+                    newTask.setTime(time);
 
                     if (isCompleted != task.isCompleted()) newTask.setCompletion(isCompleted);
                     else {
@@ -397,10 +406,9 @@ public class TaskDialog extends DialogFragment {
             if (time != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(selection);
-
                 calendar.set(Calendar.HOUR_OF_DAY, time.first);
                 calendar.set(Calendar.MINUTE, time.second);
-
+                calendar.set(Calendar.SECOND, 0);
                 selectedTimeMillis = calendar.getTimeInMillis();
             } else selectedTimeMillis = selection;
 
@@ -431,15 +439,14 @@ public class TaskDialog extends DialogFragment {
         timePicker.addOnPositiveButtonClickListener(view -> {
             time = new MyPair<>(timePicker.getHour(), timePicker.getMinute());
 
-            Calendar calendar = Calendar.getInstance();
-
             if (selectedTimeMillis != 0) {
+                Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(selectedTimeMillis);
+                calendar.set(Calendar.HOUR_OF_DAY, time.first);
+                calendar.set(Calendar.MINUTE, time.second);
+                calendar.set(Calendar.SECOND, 0);
+                selectedTimeMillis = calendar.getTimeInMillis();
             }
-
-            calendar.set(Calendar.HOUR_OF_DAY, time.first);
-            calendar.set(Calendar.MINUTE, time.second);
-            selectedTimeMillis = calendar.getTimeInMillis();
 
             // Format: "11:55 AM"
             SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -565,7 +572,6 @@ public class TaskDialog extends DialogFragment {
         SimpleDateFormat str = new SimpleDateFormat("EEEE, dd MMMM, yyyy", Locale.getDefault());
         return str.format(date);
     }
-
 
     public static String formatDueDate(String date) {
         int current = Calendar.getInstance().get(Calendar.YEAR);
