@@ -30,9 +30,9 @@ The **ToDo List App** helps you manage tasks in a simple, organized way. You can
 ---
 
 ## Extra Features
-- Gradient background that blends with status bar & navigation bar.  
+- Due date color coding for quick visual deadline tracking.
 - Priority colors automatically assigned based on selected priority.  
-- Due date color coding for quick visual deadline tracking.  
+- Gradient background that blends with status bar & navigation bar.  
 - Rounded icons/shape for a modern look. 
 
 ---
