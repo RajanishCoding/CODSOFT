@@ -20,11 +20,11 @@ The **ToDo List App** helps you manage tasks in a simple, organized way. You can
 ## Technical Features
 - **IDE:** Android Studio  
 - **Language**: Java
-- **UI**: XML layouts with ConstraintLayout, RecyclerView, etc.
+- **UI**: XML layouts with `ConstraintLayout`, `RecyclerView`, etc.
 - **Storage**: Persistent local storage (`Room` and `SharedPreferences`).
 - **Notification Handling:** Integrated with Android `NotificationManager`.
 - **Scheduling:** Implemented using `WorkManager` and `AlarmManager` for reliable task reminders.
-- **Performance**: Background threading via Thread to avoid UI blocking.
+- **Performance**: Background threading via `Thread` to avoid UI blocking.
 - **Theme**: Supports both light and dark modes with adjusted colors for readability.
 
 ---
