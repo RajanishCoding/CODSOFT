@@ -7,7 +7,7 @@ The **ToDo List App** helps you manage tasks in a simple, organized way. You can
 ## Features
 - **Add, Edit & Delete Tasks** - Quickly create new tasks, update them, or remove them permanently when not needed.  
 - **Due Date Selection** - Set a specific date for each task, with an option to set exact time for better deadline management.
-- **Notification Reminder** – Get notified automatically on the due date or at the selected time.
+- **Notification Reminder** - Get notified automatically on the due date or at the selected time.
 - **Priority Levels** - Mark tasks as Low, Medium, High, or Urgent for better organization.
 - **Mark as Completed** - Mark tasks as done without deleting them, so you can keep a record of finished work.  
 - **Mark as Important** - Highlight important tasks separately for quick access and attention.  
