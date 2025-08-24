@@ -43,6 +43,7 @@ import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -202,7 +203,7 @@ public class TaskDialog extends DialogFragment {
         dateL.setEndIconOnClickListener(v -> {
             if (timeL.getVisibility() == View.GONE) {
                 if (time != null) showTimePicker(time.first, time.second);
-                else showTimePicker(11, 0);
+                else showTimePicker(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE));
             }
             else {
                 timeL.setVisibility(View.GONE);
@@ -298,14 +299,17 @@ public class TaskDialog extends DialogFragment {
                     if (isCompleted || newTask.getDateInMillis() < System.currentTimeMillis()) {
                         if (timeL.getVisibility() == View.VISIBLE)
                             NotificationAlarm.cancelScheduledTask(context, newTask.getId(), newTask.getTitle());
-                        else
+                        else {
                             NotificationWork.cancelScheduledTask(context, newTask.getId());
+                        }
                     }
                     else {
-                        if (timeL.getVisibility() == View.VISIBLE)
+                        if (timeL.getVisibility() == View.VISIBLE) {
                             NotificationAlarm.updateScheduledTask(context, newTask.getId(), newTask.getTitle(), newTask.getDateInMillis());
-                        else
+                        }
+                        else {
                             NotificationWork.updateScheduledTask(context, newTask.getId(), newTask.getTitle(), newTask.getDateInMillis());
+                        }
                     }
                 }
                 dismiss();

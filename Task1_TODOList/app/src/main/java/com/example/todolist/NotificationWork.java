@@ -1,6 +1,7 @@
 package com.example.todolist;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
@@ -24,6 +25,7 @@ public class NotificationWork extends Worker {
         String id = getInputData().getString("id");
         String taskTitle = getInputData().getString("taskTitle");
         NotificationBuilder.showNotification(getApplicationContext(), id, taskTitle);
+        Log.d("bvbvjsi", "doWork: ");
         return Result.success();
     }
 
@@ -42,12 +44,13 @@ public class NotificationWork extends Worker {
                 .build();
 
         OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWork.class)
-                .setInitialDelay(delay, TimeUnit.SECONDS)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                 .addTag(id)
                 .setInputData(data)
                 .build();
 
         WorkManager.getInstance(context).enqueue(workRequest);
+        Log.d("bvbvjsi", "scheduleTask: ");
     }
 
     public static void updateScheduledTask(Context context, String id, String taskTitle, long dueTimeMillis) {

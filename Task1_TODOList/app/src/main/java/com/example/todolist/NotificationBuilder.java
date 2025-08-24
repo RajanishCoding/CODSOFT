@@ -36,7 +36,6 @@ public class NotificationBuilder {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String cid = "id1";
 
@@ -46,6 +45,15 @@ public class NotificationBuilder {
             manager.createNotificationChannel(channel);
         }
 
+        Intent intent1 = new Intent(context, NotificationBuilder.class);
+        intent1.setAction("Mark as ");
+
+        PendingIntent pendingIntent1 = PendingIntent.getActivity(
+                context,
+                655,
+                intent1,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
         Notification notification = new NotificationCompat.Builder(context, cid)
                 .setContentTitle("Task Due Today")
                 .setContentText(taskTitle)
@@ -53,6 +61,7 @@ public class NotificationBuilder {
                 .setContentIntent(pendingIntent)
                 .setSound(soundUri)
                 .setAutoCancel(true)
+                .addAction(R.drawable.round_star, "Mark as Completed", pendingIntent1)
                 .build();
 
         manager.notify(1, notification);

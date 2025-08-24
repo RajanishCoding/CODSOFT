@@ -54,7 +54,6 @@ public class NotificationAlarm extends BroadcastReceiver {
     }
 
     public static void updateScheduledTask(Context context, String id, String taskTitle, long dueTimeMillis) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         cancelScheduledTask(context, id, taskTitle);
         scheduleTask(context, id, taskTitle, dueTimeMillis);
     }
