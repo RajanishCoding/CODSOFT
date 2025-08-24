@@ -1,6 +1,6 @@
-# ToDo List App
+# *ToDo List App*
 
-The **ToDo List App** helps you manage tasks in a simple, organized way. You can create, edit, and delete tasks, set due dates and priorities, mark tasks as important, and receive reminders through system notifications. All tasks are saved automatically and remain available even after closing the app.
+The ***ToDo List App*** helps you manage tasks in a simple, organized way. You can create, edit, and delete tasks, set due dates and priorities, mark tasks as important, and receive reminders through system notifications. All tasks are saved automatically and remain available even after closing the app.
 
 ---
 
