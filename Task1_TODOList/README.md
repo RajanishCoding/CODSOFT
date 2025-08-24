@@ -1,12 +1,13 @@
 # ToDo List App
 
-The ToDo List App helps you manage tasks in a simple, organized way. You can create, edit, and delete tasks, set due dates and priorities, and quickly see what’s most important. All tasks are saved automatically and remain available even after closing the app.
+The **ToDo List App** helps you manage tasks in a simple, organized way. You can create, edit, and delete tasks, set due dates and priorities, mark tasks as important, and receive reminders through system notifications. All tasks are saved automatically and remain available even after closing the app.
 
 ---
 
 ## Features
 - **Add, Edit & Delete Tasks** - Quickly create new tasks, update them, or remove them permanently when not needed.  
-- **Due Date Selection** - Set a specific date for each task to manage deadlines effectively.
+- **Due Date Selection** - Set a specific date for each task, with an option to set exact time for better deadline management.
+- **Notification Reminder** – Get notified automatically on the due date or at the selected time.
 - **Priority Levels** - Mark tasks as Low, Medium, High, or Urgent for better organization.
 - **Mark as Completed** - Mark tasks as done without deleting them, so you can keep a record of finished work.  
 - **Mark as Important** - Highlight important tasks separately for quick access and attention.  
@@ -18,9 +19,11 @@ The ToDo List App helps you manage tasks in a simple, organized way. You can cre
 
 ## Technical Features
 - **IDE:** Android Studio  
-- **Language**: Java  
-- **UI**: XML layouts with ConstraintLayout, RecyclerView, etc.  
+- **Language**: Java
+- **UI**: XML layouts with ConstraintLayout, RecyclerView, etc.
 - **Storage**: Persistent local storage (Room Database and SharedPreferences).
+- **Notification Handling:** Integrated with Android `NotificationManager`.
+- **Scheduling:** Implemented using **WorkManager** and **AlarmManager** for reliable task reminders.
 - **Performance**: Background threading via Thread to avoid UI blocking.
 - **Theme**: Supports both light and dark modes with adjusted colors for readability.
 
@@ -36,5 +39,5 @@ The ToDo List App helps you manage tasks in a simple, organized way. You can cre
 
 ## Future Scope
 - Task search & filter.  
-- Due date reminders with notifications.  
+- Smart due date reminders with advanced notification options.  
 - Cloud sync for multiple devices.  
