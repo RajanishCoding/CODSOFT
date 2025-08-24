@@ -1,6 +1,6 @@
-# Quote of the Day App
+# ***Quote of the Day App***
 
-A Quote of the Day App built to spread a little motivation every day.  
+The ***Quote of the Day*** App built to spread a little motivation every day.  
 It shows a new quote every day with an option to refresh for more, lets you save your favourite quotes in one place, and also provides easy options to share them through social media or messaging, or simply copy them for later use.
 
 ---
@@ -19,9 +19,9 @@ It shows a new quote every day with an option to refresh for more, lets you save
 ## Technical Features
 - **IDE:** Android Studio  
 - **Language:** Java  
-- **UI:** XML layouts with ConstraintLayout, RecyclerView, CardView etc.  
-- **Storage:** Persistent local storage, Room Database (for saving favourites) and SharedPreferences  
-- **Performance:** Background threading via Thread to avoid UI blocking  
+- **UI:** XML layouts with `ConstraintLayout`, `RecyclerView`, `CardView` etc.  
+- **Storage:** Persistent local storage, `Room` Database (for saving favourites) and `SharedPreferences`  
+- **Performance:** Background threading via `Thread` to avoid UI blocking  
 
 ---
 
